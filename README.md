@@ -24,8 +24,11 @@ We will be using the composite pattern to represent commands and operators.
 ## Parser
 Takes in user input and determines executable paths and arguments. 
 
-## Executer
+## Executor
 Takes in executable path and arguments from Parser class.
+
+## Commands
+Stores a list of corresponding and available executables to run. Otherwise return error.
 
 ## Connectors
 This class will be a component with three child leaves.

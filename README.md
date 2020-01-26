@@ -6,7 +6,7 @@ Renzo Olivares 861156330
 #Introduction
 This is a command shell, and executes commands such as:
 	* Prints a command prompt $
-		* ex. $ `executable [argumentList][connector][executable]`
+		*ex. $ `executable [argumentList][connector][executable]`
 	* Commands and connectors
 		* &&: next command executes only if the first one executes
 		* ||: next command executes only if the first one fails

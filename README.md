@@ -186,5 +186,5 @@ class ConnectorSemiCol: Public Command{
 
 
 # Development and Testing Roadmap
-
+We have created 20 issues for our development and testing roadmap. 10 of these are to develop the classes, and the other 10 are to create unit and integration tests for each class. 
 

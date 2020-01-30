@@ -222,37 +222,34 @@ class ConnectorSemiCol: Public Command{
 
 
 # Development and Testing Roadmap
-* ShellClient
-	* #1
-	* #11
-* UserInput
-	* #2
-	* #12
-* Parser
-	* #3
-	* #14
-* Executor
-	* #4
-	* #13
-* Command
-	* #6
-	* #16
-* BasicCommand
-	* #10
-	* #20
-* CommandQueue
-	* #5
-	* #15
-* ConnectorAnd
-	* #7
-	* #17
-* ConnectorOr
-	* #8
-	* #18
-* ConnectorSemiColon
-	* #9
-	* #19
-
-
-We have created 20 issues for our development and testing roadmap. 10 of these are to develop the classes, and the other 10 are to create unit and integration tests for each class. 
+* `ShellClient`
+	* [#1 Develop ShellClient](https://github.com/cs100/assignment-renzo_phyllis/issues/1)
+	* [#11 Unit & Integration Tests](https://github.com/cs100/assignment-renzo_phyllis/issues/11)
+* `UserInput`
+	* [#2 Develop UserInput](https://github.com/cs100/assignment-renzo_phyllis/issues/2)
+	* [#12 Unit & Integration Tests](https://github.com/cs100/assignment-renzo_phyllis/issues/12)
+* `Parser`
+	* [#3 Develop Parser](https://github.com/cs100/assignment-renzo_phyllis/issues/3)
+	* [#14 Unit & Integration Tests](https://github.com/cs100/assignment-renzo_phyllis/issues/14)
+* `Executor`
+	* [#4 Develop Executor](https://github.com/cs100/assignment-renzo_phyllis/issues/4)
+	* [#13 Unit & Integration Tests](https://github.com/cs100/assignment-renzo_phyllis/issues/13)
+* `Command`
+	* [#6 Develop Command](https://github.com/cs100/assignment-renzo_phyllis/issues/6)
+	* [#16 Unit & Integration Tests](https://github.com/cs100/assignment-renzo_phyllis/issues/16)
+* `BasicCommand`
+	* [#10 Develop BasicCommand](https://github.com/cs100/assignment-renzo_phyllis/issues/10)
+	* [#20 Unit & Integration Tests](https://github.com/cs100/assignment-renzo_phyllis/issues/20)
+* `CommandQueue`
+	* [#5 Develop CommandQueue](https://github.com/cs100/assignment-renzo_phyllis/issues/5)
+	* [#15 Unit & Integration Tests](https://github.com/cs100/assignment-renzo_phyllis/issues/15)
+* `ConnectorAnd`
+	* [#7 Develop ConnectorAnd](https://github.com/cs100/assignment-renzo_phyllis/issues/7)
+	* [#17 Unit & Integration Tests](https://github.com/cs100/assignment-renzo_phyllis/issues/17)
+* `ConnectorOr`
+	* [#8 Develop ConnectorOr](https://github.com/cs100/assignment-renzo_phyllis/issues/8)
+	* [#18 Unit & Integration Tests](https://github.com/cs100/assignment-renzo_phyllis/issues/18)
+* `ConnectorSemiColon`
+	* [#9 Develop ConnectorSemiColon](https://github.com/cs100/assignment-renzo_phyllis/issues/9)
+	* [#19 Unit & Integration Tests](https://github.com/cs100/assignment-renzo_phyllis/issues/19)
 

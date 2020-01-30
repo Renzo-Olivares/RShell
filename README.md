@@ -33,7 +33,7 @@ We will be using the composite pattern to represent our commands. Our client is 
 
 
 #  Diagram
-
+![rshell_omt](images/rshell_omt.jpg?raw=true)
 
 # Classes
 ## Shell Client
@@ -219,6 +219,7 @@ class ConnectorSemiCol: Public Command{
 		* To indetify SemiColonConnector: `(?<SemiConnector>;(?=[^("|')]*(?:[("|')][^("|')]*[("|')][^("|')]*)*$))`
 		* To identify OrConnector: `(?<OrConnector>\|\|(?=[^("|')]*(?:[("|')][^("|')]*[("|')][^("|')]*)*$))`
 		* To identify arguments between quotes: `(?<Args>[\"'](.*?)[\"'])`
+
 
 # Development and Testing Roadmap
 * ShellClient

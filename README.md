@@ -186,5 +186,14 @@ class ConnectorSemiCol: Public Command{
 
 
 # Development and Testing Roadmap
+##Issues:
+
+* EXIT COMMAND
+	how to exit? 
+	how to work with exit command within a chain of commands
+* Flags
+	how to discern between flags and arguments
+* Tokenizer
+	Develop correct regular expressions to tokenize raw input ? string?
 
 

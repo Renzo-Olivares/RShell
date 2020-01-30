@@ -1,0 +1,18 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+FIND_PACKAGE(Boost 1.67.0 COMPONENTS regex REQUIRED)
+INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
+
+ADD_EXECUTABLE(sys_call
+	src/syscalls.cpp
+)
+
+ADD_EXECUTABLE(parsertest
+	src/parsertest.cpp
+)
+
+TARGET_LINK_LIBRARIES(
+	parsertest
+	LINK_PUBLIC ${Boost_LIBRARIES}
+)
+
+

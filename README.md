@@ -20,7 +20,7 @@ This is a command shell, and executes commands such as:
 
 User will launch Rshell with
 ```
-./Rshell
+./rshell
 ```
 They will then be prompted for input as follows
 ```

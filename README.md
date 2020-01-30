@@ -91,7 +91,7 @@ class Parser{
 };
 ```
 
-## Executer
+## Executor
 * Takes in a `CommandQueue` and loops through it until it is empty.
 * Leverages `fork(), execvp(), and waitpid()` to run `CommandQueue`.
 * Handles connector precedence 
@@ -221,5 +221,17 @@ class ConnectorSemiCol: Public Command{
 		* To identify arguments between quotes: `(?<Args>[\"'](.*?)[\"'])`
 
 # Development and Testing Roadmap
+* ShellClient
+* UserInput
+* Parser
+* Executor
+* Command
+* BasicCommand
+* CommandQueue
+* ConnectorAnd
+* ConnectorOr
+* ConnectorSemiColon
+
+
 We have created 20 issues for our development and testing roadmap. 10 of these are to develop the classes, and the other 10 are to create unit and integration tests for each class. 
 

@@ -183,7 +183,42 @@ class ConnectorSemiCol: Public Command{
 
 
 # Prototypes/Research
-
+* `fork()` : 
+	* Creates new child process
+	* If value is `0` then we are in the child process
+	* If value is not `0` then we are in the parent
+	* If value is `-1` then our fork failed to create a new child process
+* `execvp(const char* exec, char* const args)` : 
+	* Function responsible for executing command based on an executable path and arguments
+	* Only returns if an error has occured
+* `waitpid(pid_t pid, int *status, int options)` : 
+	* `pid` can be :
+		* `-1` : wait for any child process
+		* `0` : wait for child process whose ID is equal to calling process
+		* any number less than -1 or greater than 0 indicating the child process ID
+	* `status` will be the exit status of the child process
+	* `options` :
+		* `WNOHANG` : return immediately if no child exited
+		* `WUNTRACED` : return if child has stopped but not traced by `ptrace()`
+		* `WCONTINUED` : return if stopped child is resumed as a result of delivery of `SIGCONT`
+	* Returns PID of the exited child process
+	* `status` is written with exit status of exited child process
+* Leveraging `fork(), execvp(), and waitpid()` :
+	* We use `fork()` to create a new child process
+	* While still in the child process we use `waitpid()` to pause the parent process until the child process exits
+	* Now in the child process we can call on `execvp()` to execute our command by passing it an executable path i.e. `ls` and arguments i.e. `-a` to run `ls -a`
+	* If `execvp()` completes succesfully it will return nothing, and go back to the parent process, if it fails it will return an exit status of `256`
+	* Back at the parent process `waitpid()` has now given us the exited child process's PID and exit status
+* Regex(regular expressions) :
+	* We can use Boost library to leverage regex in our project
+	* Another option is to use the built in regex library provided by C++ 11
+	* Regex is a powerful tool used to filter/identify patterns in text
+	* We want to leverage regex in our project to identify certain tokens in ou raw user input. We then want to transform our raw user input into `BasicCommand` objects and `Connectors` that will be pushed onto a `CommandQueue` where they will be executed FIFO by the `Executor`
+	* Potential regex patterns:
+		* To identify AndConnector: `(?<AndConnector>&&(?=[^("|')]*(?:[("|')][^("|')]*[("|')][^("|')]*)*$))`
+		* To indetify SemiColonConnector: `(?<SemiConnector>;(?=[^("|')]*(?:[("|')][^("|')]*[("|')][^("|')]*)*$))`
+		* To identify OrConnector: `(?<OrConnector>\|\|(?=[^("|')]*(?:[("|')][^("|')]*[("|')][^("|')]*)*$))`
+		* To identify arguments between quotes: `(?<Args>[\"'](.*?)[\"'])`
 
 # Development and Testing Roadmap
 We have created 20 issues for our development and testing roadmap. 10 of these are to develop the classes, and the other 10 are to create unit and integration tests for each class. 

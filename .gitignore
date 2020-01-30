@@ -37,3 +37,11 @@ test
 # CMake Temp Files
 CMakeCache.txt
 CMakeFiles
+
+# Prototypes
+prototype/CMakeFiles
+prototype/CMakeCache.txt
+prototype/cmake_install.cmake
+prototype/Makefile
+prototype/sys_call
+prototype/parsertest

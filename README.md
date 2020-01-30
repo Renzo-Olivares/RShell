@@ -91,7 +91,7 @@ class Parser{
 };
 ```
 
-## Executor
+## Executer
 * Takes in a `CommandQueue` and loops through it until it is empty.
 * Leverages `fork(), execvp(), and waitpid()` to run `CommandQueue`.
 * Handles connector precedence 

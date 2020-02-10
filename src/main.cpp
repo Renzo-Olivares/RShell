@@ -8,10 +8,8 @@
 int main()
 {
     std::queue<Command*> cmdQueue;
-    char cmndLs[] = {'l','s'};
-    char allFlag[] = {'a'};
-    std::cout << "cmndLs main " << cmndLs << std::endl;
-    std::cout << "allflag main " << allFlag << std::endl;
+    char cmndLs[] = "ls";
+    char allFlag[] = "a";
     Command* test = new BasicCommand(cmndLs, allFlag);
     cmdQueue.push(test);
     Executor runner = Executor(cmdQueue);

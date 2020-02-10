@@ -205,7 +205,7 @@ class ConnectorSemiCol: Public Command{
 	* `status` is written with exit status of exited child process
 * Leveraging `fork(), execvp(), and waitpid()` :
 	* We use `fork()` to create a new child process
-	* While still in the child process we use `waitpid()` to pause the parent process until the child process exits
+	* While still in the parent process we use `waitpid()` to pause the parent process until the child process exits
 	* Now in the child process we can call on `execvp()` to execute our command by passing it an executable path i.e. `ls` and arguments i.e. `-a` to run `ls -a`
 	* If `execvp()` completes succesfully it will return nothing, and go back to the parent process, if it fails it will return an exit status of `256`
 	* Back at the parent process `waitpid()` has now given us the exited child process's PID and exit status

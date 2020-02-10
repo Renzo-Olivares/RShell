@@ -2,10 +2,6 @@
 #include <unistd.h>
 #include <iostream>
 
-void execute(const char *exec, char *const argv[]){
-    execvp(exec, argv);
-}
-
 int main(){
     char cmndLs[2] = {'l','s'};//change this to invalid command such as 'l', 'x' to test for failure
     const char *lsCmd = cmndLs;

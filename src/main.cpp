@@ -3,13 +3,12 @@
 #include "../header/BasicCommand.hpp"
 
 #include <queue>
-#include <iostream>
 
 int main()
 {
     std::queue<Command*> cmdQueue;
-    char cmndLs[] = "ls";
-    char allFlag[] = "a";
+    char* cmndLs = "ls";
+    char* allFlag = "-al";
     Command* test = new BasicCommand(cmndLs, allFlag);
     cmdQueue.push(test);
     Executor runner = Executor(cmdQueue);

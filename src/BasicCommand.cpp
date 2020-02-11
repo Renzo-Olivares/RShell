@@ -1,28 +1,17 @@
 #include "../header/BasicCommand.hpp"
 
-#include <iostream>
-
-BasicCommand::BasicCommand(char execToken[], char argToken[]){
-    executable = execToken;
-    int n = strlen(argToken);
-    char* const args[n] = {argToken};
-    char allFlag[1] = {'a'};
-    char *const flags[2] = {allFlag};
-    char *const *lsArgs = flags;
-    arguments = lsArgs;
-    std::cout << "argtoken size " << n << std::endl;
-    std::cout << "exectoken " << execToken << std::endl;
-    std::cout << "argtoken " << argToken << std::endl;
-    std::cout << "allflag " << allFlag << std::endl;
-    std::cout << "final arguments being sent " << *arguments << std::endl;
+BasicCommand::BasicCommand(char* execToken, char* argToken){
+    command.push_back(execToken);
+    command.push_back(argToken);
+    command.push_back(NULL);
 }
 
-const char* BasicCommand::getPath(){
-    return executable;
+char* BasicCommand::getPath(){
+    return command[0];
 }
 
-char* const* BasicCommand::getArgs(){
-    return arguments;
+char** BasicCommand::getArgs(){
+    return command.data();
 }
 
 std::string BasicCommand::cmdString(){

@@ -13,14 +13,6 @@ void Executor::runCmds(){
 
         Command* currentCmd = commandQueue.front();
 
-        char allFlag[1] = {'a'};
-        char *const flags[2] = {allFlag};
-        char *const *lsArgs = flags;
-
-        std::cout << "current command " << currentCmd->cmdString() << std::endl;
-        std::cout << "current args " << *((*currentCmd).getArgs()) << std::endl;
-        std::cout << "correct args " << **lsArgs << std::endl;
-
         std::cout << "Creating child process" << std::endl;
         child_pid = fork();
 
@@ -29,7 +21,8 @@ void Executor::runCmds(){
             std::cout << "Child process: Child PID = " << getpid() << std::endl;
             std::cout << "Running execvp()" << std::endl;
             execvp(currentCmd->getPath(), currentCmd->getArgs());
-            //execvp(currentCmd->getPath(), lsArgs);
+
+            
             //if child process reaches here execvp must have failed
             std::cout << "Child process: execvp failed" << std::endl;
             exit(1);

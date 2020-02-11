@@ -13,29 +13,29 @@ void Executor::runCmds(){
 
         Command* currentCmd = commandQueue.front();
 
-        std::cout << "Creating child process" << std::endl;
+        std::cout << "Parent: Creating child process" << std::endl;
         child_pid = fork();
 
         if(child_pid == 0){//fork() returns 0 to the child process
-            std::cout << "Inside child process" << std::endl;
-            std::cout << "Child process: Child PID = " << getpid() << std::endl;
-            std::cout << "Running execvp()" << std::endl;
+            std::cout << "Child: Inside child process" << std::endl;
+            std::cout << "Child: Child PID = " << getpid() << std::endl;
+            std::cout << "Child: Running execvp()" << std::endl;
             execvp(currentCmd->getPath(), currentCmd->getArgs());
 
-            
+
             //if child process reaches here execvp must have failed
-            std::cout << "Child process: execvp failed" << std::endl;
+            std::cout << "Child: execvp failed" << std::endl;
             exit(1);
         }
         else{//fork() returns process id of child process
-            std::cout << "Inside parent process" << std::endl;
+            std::cout << "Parent: Inside parent process" << std::endl;
             if(child_pid == (pid_t)(-1)){
-                std::cout << "Parent process: fork failed to create Child process" << std::endl;
+                std::cout << "Parent: fork failed to create Child process" << std::endl;
                 exit(1);
             }else{
-                std::cout << "Parent process: waiting for Child to exit" << std::endl;
+                std::cout << "Parent: waiting for Child to exit" << std::endl;
                 wait_child = waitpid(child_pid,&child_status,0);
-                std::cout << "Parent process: Child PID and exit status " << wait_child << " " << child_status << std::endl;
+                std::cout << "Parent: Child PID and exit status " << wait_child << " " << child_status << std::endl;
             }
         }
         std::cout << "Executed command" << std::endl;

@@ -2,16 +2,15 @@
 #define BASICCOMMAND_HPP
 
 #include "../header/Command.hpp"
-#include <cstring>
+#include <vector>
 
 class BasicCommand : public Command {
     private:
-        const char *executable;
-        char* const* arguments;
+        std::vector<char*> command;
     public:
-        BasicCommand(char execToken[], char argToken[]);
-        const char* getPath();
-        char* const* getArgs();
+        BasicCommand(char* execToken, char* argToken);
+        char* getPath();
+        char** getArgs();
         virtual std::string cmdString();
 };
 

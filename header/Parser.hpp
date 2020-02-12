@@ -12,8 +12,9 @@
 class Parser{
     private:
         std::queue<Command*> parsedCmds;
+        std::string userInput;
     public:
-        Parser();
+        Parser(std::string rawUserInput);
         void run();
         std::queue<Command*> getParsedCmds();
         char* whitespaceTrimLt(std::string rawString);

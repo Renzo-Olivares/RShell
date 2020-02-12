@@ -5,8 +5,6 @@ Parser::Parser(std::string rawUserInput){
 }
 
 void Parser::run(){
-    //std::string sp("echo hello && echo goodbye ; mkdir \"bye\" &&echo             'lol' ||     echo fail ; echo 123; rshell"); 
-    //std::string sp("echa A && echo B");
     boost::regex re("(^&&|^\\|\\||^;|^\\s+)?(?<executable>\\w+)(?<arguments>\\s+[\"']?\\w+[\"']?)?\\s?+(?<connector>&&|\\|\\||;)?"); 
     boost::sregex_iterator iter(userInput.begin(), userInput.end(), re);
     boost::sregex_iterator end;
@@ -17,21 +15,17 @@ void Parser::run(){
         char* arguments = whitespaceTrimLt((*iter)[3]);
         char* connector = whitespaceTrimLt((*iter)[4]);
 
-        Command* newCmd = new BasicCommand(executable, arguments);
-        Command* newConnector = new Connector(connector);
-        std::cout << "Path: " << newCmd->getPath() << std::endl;
-        std::cout << "Args: " << newCmd->getArgs() << std::endl;
-        std::cout << "Connector: " << newConnector->cmdString() << std::endl;
+        Command* newCmd;
+        Command* newConnector =  new Connector(connector);
+
+        if(std::string(executable) == "exit"){
+            newCmd = new ExitCommand(executable);
+        }else{
+            newCmd = new BasicCommand(executable, arguments);
+        }
+
         parsedCmds.push(newCmd);
         parsedCmds.push(newConnector);
-        //push command into vector, then connector
-        /*
-        std::cout << "full command: " << full << '\n';
-        std::cout << "executable: " << executable << '\n';
-        std::cout << "arguments: " << arguments <<'\n';
-        std::cout << "connector: " << connector <<'\n';
-        std::cout << std::endl;
-        */
     }
 }
 
@@ -53,7 +47,3 @@ type Parser::commentTrim(){
     //trim the hashtag(not inside quotes) and everything after it
 }
 */
-
-//boost::regex connre("(?<Connector>(&&|\\|\\||;)(?=[^(\"|')]*(?:[(\"|')][^(\"|')]*[(\"|')][^(\"|')]*)*$))");
-//boost::regex fullre("(?<fullcommand>(^&&|^\\|\\||^;|^\\s+)?(?<executable>\\w+)(?<arguments>\\s+[\"']?\\w+[\"']?)?\\s?+(?<connector>&&|\\|\\||;)?)");
-//(?<Connector>(&&|\|\||;)(?=[^("|')]*(?:[("|')][^("|')]*[("|')][^("|')]*)*$)) 

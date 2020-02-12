@@ -5,8 +5,10 @@
 
 class UserInput {
     private:
+        std::string rawInput;
     public:
         UserInput();
+        std::string getInput();
 };
 
 #endif /* USERINPUT_HPP */

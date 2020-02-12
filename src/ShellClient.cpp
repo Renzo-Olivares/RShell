@@ -1,10 +1,24 @@
 #include "../header/ShellClient.hpp"
 
 ShellClient::ShellClient(){
-    init();
+    //while exit flag false
+    while(!exit){
+        init();
+        //UserInput rawInput = UserInput();
+        //Parser analyzer = Parser(rawInput.getInput());
+        //analyzer.run();
+        //Command* commandQueue = new CommandQueue();
+        //commandQueue.add(analyzer.getParsedCmds());
+        //Executor runner = Executor();
+        //runner.runCmds();
+        /*
+            create exit command object, if executor encounters then immediately return and set exit flag to true
+        */
+    }
 }
 
 void ShellClient::init(){
+
 /*  Executor test
     std::queue<Command*> cmdQueue;
     char* cmndLs = "ls";
@@ -17,14 +31,14 @@ void ShellClient::init(){
     Executor runner = Executor(cmdQueue);
     runner.runCmds();
 */
-    Parser analyzer = Parser();
+/*
+    Parser analyzer = Parser("echo A && echo B");
     analyzer.run();
     std::queue<Command*> cmdQueue = analyzer.getParsedCmds();
     Executor runner = Executor(cmdQueue);
     runner.runCmds();
+*/
    //Command* commandQueue = new CommandQueue();
    //commandQueue.add(analyzer.getParsedCmds());
-/*
-    
-*/
+   UserInput rawInput = UserInput();
 }

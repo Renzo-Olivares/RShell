@@ -5,11 +5,13 @@
 #include "../header/Command.hpp"
 #include "../header/BasicCommand.hpp"
 #include "../header/Parser.hpp"
+#include "../header/UserInput.hpp"
 
 #include <queue>
 
 class ShellClient {
     private:
+        bool exit = false;
     public:
         ShellClient();
         void init();

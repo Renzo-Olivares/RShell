@@ -15,5 +15,5 @@ char** BasicCommand::getArgs(){
 }
 
 std::string BasicCommand::cmdString(){
-    return getPath();
+    return "cmd";
 }

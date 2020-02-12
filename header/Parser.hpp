@@ -3,6 +3,7 @@
 
 #include "../header/BasicCommand.hpp"
 #include "../header/Connector.hpp"
+#include "../header/ExitCommand.hpp"
 
 #include <iostream>
 #include <queue>

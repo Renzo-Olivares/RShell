@@ -6,7 +6,6 @@
 #include <queue>
 #include <sys/wait.h>
 #include <unistd.h>
-#include <iostream>
 
 class Executor{
     private:
@@ -14,7 +13,7 @@ class Executor{
         int child_status;
     public:
         Executor(std::queue<Command*> cmdQueue);
-        void runCmds();
+        int runCmds();
 };
 
 #endif /* EXECUTOR_HPP */

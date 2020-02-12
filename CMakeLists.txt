@@ -17,6 +17,8 @@ ADD_EXECUTABLE(rshell
     src/Parser.cpp
     src/ShellClient.cpp
     src/Connector.cpp
+    src/UserInput.cpp
+    #src/CommandQueue.cpp
 )
 
 #ADD_EXECUTABLE(test

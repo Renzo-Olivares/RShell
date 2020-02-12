@@ -8,10 +8,37 @@ void Executor::runCmds(){
     std::cout << "Running command queue" << std::endl;
     while(!commandQueue.empty()){
         pid_t child_pid; 
-        int child_status; //child exit status
         pid_t wait_child; //pid returned by waitpid
 
         Command* currentCmd = commandQueue.front();
+
+        if (currentCmd->cmdString() != "cmd"){
+            if(currentCmd->cmdString() == "&&"){
+                std::cout << "AND Connector" << std::endl;
+                if(child_status == 0){
+                    commandQueue.pop(); //pop connector
+                    continue;
+                }else{
+                    commandQueue.pop(); //pop connector
+                    commandQueue.pop(); //pop next command
+                    continue;
+                }
+            }else if(currentCmd->cmdString() == "||"){
+                std::cout << "OR Connector" << std::endl;
+                if(child_status != 0){ //last command was not successful
+                    commandQueue.pop(); //pop connector
+                    continue;
+                }else{ //last command was successful
+                    commandQueue.pop(); //pop connector
+                    commandQueue.pop(); //pop next command
+                    continue;
+                }
+            }else{
+                std::cout << "SemiColon/Blank Connector" << std::endl;
+                commandQueue.pop(); //pop connector
+                continue;
+            }
+        }
 
         std::cout << "Parent: Creating child process" << std::endl;
         child_pid = fork();
@@ -42,13 +69,3 @@ void Executor::runCmds(){
         commandQueue.pop();
     }
 }
-
-/*
-int Executor::newChild(){
-    return 1;
-}
-
-void Executor::pauseParent(){
-
-}
-*/

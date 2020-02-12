@@ -11,11 +11,10 @@
 class Executor{
     private:
         std::queue<Command*> commandQueue;
+        int child_status;
     public:
         Executor(std::queue<Command*> cmdQueue);
         void runCmds();
-        /*int newChild();
-        void pauseParent();*/
 };
 
 #endif /* EXECUTOR_HPP */

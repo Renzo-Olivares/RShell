@@ -18,6 +18,7 @@ ADD_EXECUTABLE(rshell
     src/ShellClient.cpp
     src/Connector.cpp
     src/UserInput.cpp
+    src/ExitCommand.cpp
     #src/CommandQueue.cpp
 )
 

@@ -5,7 +5,7 @@ Parser::Parser(std::string rawUserInput){
 }
 
 void Parser::run(){
-    boost::regex re("(^&&|^\\|\\||^;|^\\s+)?(?<executable>\\w+)(?<arguments>\\s+[\"']?\\w+[\"']?)?\\s?+(?<connector>&&|\\|\\||;)?"); 
+    boost::regex re("(^&&|^\\|\\||^;|^\\s+)?(?<executable>\\w+)(?<arguments>\\s+[\"'-]?\\w+[\"']?)?\\s?+(?<connector>&&|\\|\\||;)?"); 
     boost::sregex_iterator iter(userInput.begin(), userInput.end(), re);
     boost::sregex_iterator end;
 

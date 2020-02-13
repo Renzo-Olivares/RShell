@@ -15,6 +15,7 @@ class Executor{
     public:
         Executor(CommandQueue* cmdQueue);
         int runCmds();
+        int getLastChildStatus();
 };
 
 #endif /* EXECUTOR_HPP */

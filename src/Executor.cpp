@@ -31,8 +31,7 @@ int Executor::runCmds(){
                 }
             }else if(cmdList->cmdString() == "exit"){
                 //break everythig and return immediately
-                //std::queue<Command*> empty;
-                //std::swap(commandQueue, empty);
+                cmdList->clear();
                 return -1;
             }else{
                 cmdList->popCmd(); //pop connector
@@ -63,4 +62,8 @@ int Executor::runCmds(){
         cmdList->popCmd();
     }
     return 0;
+}
+
+int Executor::getLastChildStatus(){
+    return child_status;
 }

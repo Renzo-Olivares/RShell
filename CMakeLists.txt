@@ -30,6 +30,8 @@ ADD_EXECUTABLE(test
     src/ExitCommand.cpp
     src/CommandQueue.cpp
     src/Executor.cpp
+    src/Parser.cpp
+    src/UserInput.cpp
 )
 
 TARGET_LINK_LIBRARIES(

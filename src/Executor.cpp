@@ -1,43 +1,41 @@
 #include "../header/Executor.hpp"
 
-Executor::Executor(std::queue<Command*> cmdQueue){
-    commandQueue = cmdQueue;
+Executor::Executor(CommandQueue* cmdQueue){
+    cmdList = cmdQueue;
 }
 
 int Executor::runCmds(){
-    while(!commandQueue.empty()){
+    while(!cmdList->isEmpty()){
         pid_t child_pid; 
         pid_t wait_child; //pid returned by waitpid
 
-        Command* currentCmd = commandQueue.front();
-
-        if (currentCmd->cmdString() != "cmd"){
-            if(currentCmd->cmdString() == "&&"){
+        if (cmdList->cmdString() != "cmd"){
+            if(cmdList->cmdString() == "&&"){
                 //std::cout << "AND Connector" << std::endl;
                 if(child_status == 0){
-                    commandQueue.pop(); //pop connector
+                    cmdList->popCmd(); //pop connector
                     continue;
                 }else{
-                    commandQueue.pop(); //pop connector
-                    commandQueue.pop(); //pop next command
+                    cmdList->popCmd(); //pop connector
+                    cmdList->popCmd(); //pop next command
                     continue;
                 }
-            }else if(currentCmd->cmdString() == "||"){
+            }else if(cmdList->cmdString() == "||"){
                 if(child_status != 0){ //last command was not successful
-                    commandQueue.pop(); //pop connector
+                    cmdList->popCmd(); //pop connector
                     continue;
                 }else{ //last command was successful
-                    commandQueue.pop(); //pop connector
-                    commandQueue.pop(); //pop next command
+                    cmdList->popCmd(); //pop connector
+                    cmdList->popCmd(); //pop next command
                     continue;
                 }
-            }else if(currentCmd->cmdString() == "exit"){
+            }else if(cmdList->cmdString() == "exit"){
                 //break everythig and return immediately
-                std::queue<Command*> empty;
-                std::swap(commandQueue, empty);
+                //std::queue<Command*> empty;
+                //std::swap(commandQueue, empty);
                 return -1;
             }else{
-                commandQueue.pop(); //pop connector
+                cmdList->popCmd(); //pop connector
                 continue;
             }
         }
@@ -45,7 +43,7 @@ int Executor::runCmds(){
         child_pid = fork();
 
         if(child_pid == 0){//fork() returns 0 to the child process
-            execvp(currentCmd->getPath(), currentCmd->getArgs());
+            execvp(cmdList->getPath(), cmdList->getArgs());
 
 
             //if child process reaches here execvp must have failed
@@ -62,7 +60,7 @@ int Executor::runCmds(){
                 }
             }
         }
-        commandQueue.pop();
+        cmdList->popCmd();
     }
     return 0;
 }

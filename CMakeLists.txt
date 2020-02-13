@@ -19,7 +19,7 @@ ADD_EXECUTABLE(rshell
     src/Connector.cpp
     src/UserInput.cpp
     src/ExitCommand.cpp
-    #src/CommandQueue.cpp
+    src/CommandQueue.cpp
 )
 
 #ADD_EXECUTABLE(test

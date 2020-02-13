@@ -95,6 +95,7 @@ TEST(CommandQueueTest, CQCmdTypeOrc){
     char* ors = "||";
 	CommandQueue* cq = new CommandQueue();
     Command* orc = new Connector(ors);
+    cq->addCmd(orc);
 
 	EXPECT_EQ(cq->cmdString(), "||");
 }
@@ -108,6 +109,7 @@ TEST(CommandQueueTest, CQCmdTypeAndc){
 	EXPECT_EQ(cq->cmdString(), "&&");
 }
 
+
 TEST(CommandQueueTest, CQCmdTypeSemiC){
     char* semis = ";";
 	CommandQueue* cq = new CommandQueue();
@@ -116,6 +118,7 @@ TEST(CommandQueueTest, CQCmdTypeSemiC){
 
 	EXPECT_EQ(cq->cmdString(), ";");
 }
+
 
 TEST(CommandQueueTest, CQCmdTypeBC){
     char* exec = "echo";
@@ -127,6 +130,7 @@ TEST(CommandQueueTest, CQCmdTypeBC){
 
 	EXPECT_EQ(cq->cmdString(), "cmd");
 }
+
 
 TEST(CommandQueueTest, CQCmdTypeNull){
     char* nulls = "";
@@ -145,4 +149,5 @@ TEST(CommandQueueTest, CQExitCmd){
 
 	EXPECT_EQ(cq->cmdString(), "exit");
 }
+
 #endif //__COMMANDQUEUE_TEST_HPP__

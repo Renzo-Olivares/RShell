@@ -27,6 +27,7 @@ ADD_EXECUTABLE(test
     src/BasicCommand.cpp
     src/Command.cpp
     src/Connector.cpp
+    src/ExitCommand.cpp
 )
 
 TARGET_LINK_LIBRARIES(

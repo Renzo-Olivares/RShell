@@ -3,16 +3,17 @@
 
 #include "../header/Command.hpp"
 #include "../header/BasicCommand.hpp"
+#include "../header/CommandQueue.hpp"
 #include <queue>
 #include <sys/wait.h>
 #include <unistd.h>
 
 class Executor{
     private:
-        std::queue<Command*> commandQueue;
+        CommandQueue* cmdList;
         int child_status;
     public:
-        Executor(std::queue<Command*> cmdQueue);
+        Executor(CommandQueue* cmdQueue);
         int runCmds();
 };
 

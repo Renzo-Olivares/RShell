@@ -19,7 +19,7 @@ TEST(BasicCommandTest, BCArgsTest){
 	char* args = "hello";
 	
 	Command* testcmd = new BasicCommand(exec,args);
-	EXPECT_EQ(std::string(testcmd->getArgs()), "hello");
+	EXPECT_EQ((testcmd->getArgs())[1], "hello");
 }
 
 TEST(BasicCommandTest, BCcmdStringTest){
@@ -28,7 +28,7 @@ TEST(BasicCommandTest, BCcmdStringTest){
 	char* args = "hello";
 	
 	Command* testcmd = new BasicCommand(exec,args);
-	EXPECT_EQ(std::string(testcmd->cmdString()), "echo hello");
+	EXPECT_EQ(testcmd->cmdString(), "cmd");
 }
 
 TEST(BasicCommandTest, BCechaTest){

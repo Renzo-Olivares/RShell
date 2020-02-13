@@ -9,6 +9,7 @@ echo a || echo b
 git status || echo a
 echo A#&&echo B
 echo a || exit
-
-echo a && echo b  
+ls -a && echo "hey" && mkdir test1 && echo goodbye
+cd test1 ;  mkdir test2
+ls -a || echo a && echo b  
 

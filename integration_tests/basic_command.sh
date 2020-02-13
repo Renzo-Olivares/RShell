@@ -5,16 +5,16 @@ echo "hello"
 echo hello
 mkdir test
 echo world
-mkdir test2
+mkdir tests
 echa wrong
 ls
-rm -r test2
+rm -r tests
 ls
 git status
 echo echo
-ls -j
+git status
 echo cs100
-ls -a -l
+ls -a
 ;
 &&
 ||

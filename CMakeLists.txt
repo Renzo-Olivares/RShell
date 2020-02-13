@@ -7,7 +7,7 @@ INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
 ADD_SUBDIRECTORY(googletest)
 
 SET(CMAKE_CXX_STANDARD 11)
-SET(CMAKE_BUILD_TYPE Debug)
+#SET(CMAKE_BUILD_TYPE Debug) gdb
 
 ADD_EXECUTABLE(rshell
     src/main.cpp
@@ -22,14 +22,15 @@ ADD_EXECUTABLE(rshell
     src/CommandQueue.cpp
 )
 
-#ADD_EXECUTABLE(test
-#)
+ADD_EXECUTABLE(test
+    unit_tests/unit_test.cpp
+)
 
 TARGET_LINK_LIBRARIES(
 	rshell
 	LINK_PUBLIC ${Boost_LIBRARIES}
 )
 
-#TARGET_LINK_LIBRARIES(test gtest)
-#TARGET_COMPILE_DEFINITIONS(test PRIVATE gtest_disable_pthreads=0N)
+TARGET_LINK_LIBRARIES(test gtest)
+TARGET_COMPILE_DEFINITIONS(test PRIVATE gtest_disable_pthreads=0N)
 

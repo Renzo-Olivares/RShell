@@ -26,6 +26,7 @@ ADD_EXECUTABLE(test
     unit_tests/unit_test.cpp
     src/BasicCommand.cpp
     src/Command.cpp
+    src/Connector.cpp
 )
 
 TARGET_LINK_LIBRARIES(

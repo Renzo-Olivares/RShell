@@ -14,6 +14,7 @@ class CommandQueue : public Command {
         void addCmd(Command* command);
         void popCmd();
         bool isEmpty();
+        void clear();
         virtual std::string cmdString();
 };
 

@@ -27,6 +27,11 @@ bool CommandQueue::isEmpty(){
     return commandList.empty();
 }
 
+void CommandQueue::clear(){
+    std::queue<Command*> empty;
+    std::swap(commandList, empty);
+}
+
 std::string CommandQueue::cmdString(){
     return (commandList.front())->cmdString();
 }

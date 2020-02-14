@@ -91,6 +91,7 @@ class Parser{
         std::queue<Command*> getParsedCmds();
         char* whitespaceTrimLt(std::string rawString);
         void buildCmd(char* execu, char* args);
+	commentTrim(std::string rawInput);
 };
 ```
 

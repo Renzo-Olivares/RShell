@@ -79,17 +79,18 @@ class UserInput{
 * Takes in user input and tokenizes it into seperate tokens:
 	* ExecToken -> Along with ArgsToken gets transformed into `BasicCommand` object
 	* ArgsToken -> Along with ExecToken gets transformed into `BasicCommand` object
-	* AndToken -> Becomes `ConnectorAnd` object
-	* OrToken -> Becomes `ConnectorOr` object
-	* SemiToken -> Becomes `ConnectorSemiColon` object
 * Runs analysis and returns a `queue` of `Command` objects that the Executor can run
 ```c++
 class Parser{
-		std::string targetString;
-	public:
-		Parser(){}
-		void input(UserInput rawInput){};
-		queue run(){}
+	 private:
+        std::queue<Command*> parsedCmds;
+        std::string userInput;
+    public:
+        Parser(std::string rawUserInput);
+        void run();
+        std::queue<Command*> getParsedCmds();
+        char* whitespaceTrimLt(std::string rawString);
+        void buildCmd(char* execu, char* args);
 };
 ```
 

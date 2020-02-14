@@ -33,7 +33,7 @@ We will be using the composite pattern to represent our commands. Our client is 
 
 
 #  Diagram
-![rshell_omt](images/rshell_omt.jpg?raw=true)
+![rshell_omt](images/rshellomt0213.jpg?raw=true)
 
 # Classes
 ## Shell Client

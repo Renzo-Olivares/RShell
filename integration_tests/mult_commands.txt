@@ -1,0 +1,8 @@
+echo a ; echo b
+echo a && echo b
+echo a || echo b
+git status || echo a
+echo a || exit
+ls -a && echo "hey"
+ls -a || echo a
+exit

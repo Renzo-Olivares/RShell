@@ -5,8 +5,9 @@ Parser::Parser(std::string rawUserInput){
 }
 
 void Parser::run(){
-    boost::regex re("[^\\s'\"]+|\"([^'\"]*)\"|'([^'\"]*)'"); 
-    auto input_begin = boost::sregex_iterator(userInput.begin(), userInput.end(), re);
+    boost::regex re("[^\\s'\"]+|\"([^'\"]*)\"|'([^'\"]*)'");
+    std::string cleanInput = commentTrim(userInput);
+    auto input_begin = boost::sregex_iterator(cleanInput.begin(), cleanInput.end(), re);
     auto input_end = boost::sregex_iterator();
     int tokencount = 1;
     int position = 1;
@@ -75,9 +76,10 @@ void Parser::buildCmd(char* execu, char* args){
     }
     parsedCmds.push(newCmd);
 }
-/*
-type Parser::commentTrim(){
-    return trimmedstring
-    //trim the hashtag(not inside quotes) and everything after it
+
+std::string Parser::commentTrim(std::string rawInput){
+    std::regex re("#(?=[^(\"|')]*(?:[(\"|')][^(\"|')]*[(\"|')][^(\"|')]*)*$)");
+    std::smatch m;
+    std::regex_search(rawInput, m, re);
+    return rawInput.substr(0, m.position(0));
 }
-*/

@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <queue>
+#include <regex>
 #include <boost/regex.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
@@ -20,6 +21,7 @@ class Parser{
         std::queue<Command*> getParsedCmds();
         char* whitespaceTrimLt(std::string rawString);
         void buildCmd(char* execu, char* args);
+        std::string commentTrim(std::string rawInput);
 };
 
 #endif /* PARSER_HPP */

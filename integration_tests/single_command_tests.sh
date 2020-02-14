@@ -1,21 +1,9 @@
 #!/bin/sh
 
-ls -a
-echo "hello"
-echo hello
-mkdir test
-echo world
-mkdir tests
-echa wrong
-ls
-rm -r tests
-ls
-git status
-echo echo
-git status
-echo cs100
-ls -a
-;
-&&
-||
-exit
+echo "Testing simple commands"
+
+echo "loading simple commands"
+../rshell < "simple.txt"
+echo
+
+echo "Simple command test complete"

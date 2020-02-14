@@ -1,0 +1,13 @@
+ls -a
+echo "hello"
+echo hello
+mkdir test
+echo world
+mkdir tests
+echa wrong
+git status
+echo echo
+git status
+echo cs100
+ls -a
+exit

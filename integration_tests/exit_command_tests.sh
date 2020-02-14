@@ -1,11 +1,13 @@
 #!/bin/sh
 
-exit
+echo "Testing exit commands"
 
-echo a; exit
+echo "exit #exit"
+../rshell < "exita.txt"
+echo
 
-ls && exit
+echo "mkdir test ; exit"
+../rshell < "exitb.txt"
+echo
 
-mkdir test; exit
-
-ls -a || echo q && exit
+echo "Exit test complete"

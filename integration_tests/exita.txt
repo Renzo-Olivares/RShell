@@ -1,0 +1,2 @@
+echo "echo a"
+exit #exit

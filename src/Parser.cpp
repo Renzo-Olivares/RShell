@@ -5,27 +5,51 @@ Parser::Parser(std::string rawUserInput){
 }
 
 void Parser::run(){
-    boost::regex re("(^&&|^\\|\\||^;|^\\s+)?(?<executable>\\w+)(?<arguments>\\s+[\"'-]?\\w+[\"']?)?\\s?+(?<connector>&&|\\|\\||;)?"); 
-    boost::sregex_iterator iter(userInput.begin(), userInput.end(), re);
-    boost::sregex_iterator end;
+    boost::regex re("[^\\s'\"]+|\"([^'\"]*)\"|'([^'\"]*)'"); 
+    auto input_begin = boost::sregex_iterator(userInput.begin(), userInput.end(), re);
+    auto input_end = boost::sregex_iterator();
+    int tokencount = 1;
+    int position = 1;
+    int nummatches = std::distance(input_begin, input_end);
+    char* exec;
+    char* args;
+    char* connector;
 
-    for( ; iter != end; ++iter ) {
-        char* full = whitespaceTrimLt((*iter)[0]);
-        char* executable = whitespaceTrimLt((*iter)[2]);
-        char* arguments = whitespaceTrimLt((*iter)[3]);
-        char* connector = whitespaceTrimLt((*iter)[4]);
-
-        Command* newCmd;
-        Command* newConnector =  new Connector(connector);
-
-        if(std::string(executable) == "exit"){
-            newCmd = new ExitCommand(executable);
-        }else{
-            newCmd = new BasicCommand(executable, arguments);
-        }
-
-        parsedCmds.push(newCmd);
-        parsedCmds.push(newConnector);
+    for( ; input_begin != input_end; ++input_begin ) {
+       char* token = whitespaceTrimLt((*input_begin)[0]);
+       if(tokencount == 1){
+           exec = whitespaceTrimLt((*input_begin)[0]);
+           if(position == nummatches){
+               //build and push
+               buildCmd(exec, args);
+               break;
+           }
+       }else if(tokencount == 2){
+           args = whitespaceTrimLt((*input_begin)[0]);
+           if(position == nummatches){
+               //build and push
+               buildCmd(exec, args);
+               break;
+           }
+       }else if(tokencount == 3){
+           connector = whitespaceTrimLt((*input_begin)[0]);
+       }
+       if(tokencount < 3){ //next token
+           tokencount++;
+       }else{
+           //create command and connector, push onto queue
+            Command* newCmd;
+            if(std::string(exec) == "exit"){
+                newCmd = new ExitCommand(exec);
+            }else{
+                newCmd = new BasicCommand(exec, args);
+            }
+            Command* newConnector =  new Connector(connector);
+            parsedCmds.push(newCmd);
+            parsedCmds.push(newConnector);
+            tokencount = 1; //reset token count after connector
+       }
+       position++;
     }
 }
 
@@ -40,6 +64,16 @@ char* Parser::whitespaceTrimLt(std::string rawString){
     std::copy(rawString.begin(), rawString.end(), outp);
     outp[n] = '\0';
     return outp;
+}
+
+void Parser::buildCmd(char* execu, char* args){
+    Command* newCmd;
+    if(std::string(execu) == "exit"){
+        newCmd = new ExitCommand(execu);
+    }else{
+        newCmd = new BasicCommand(execu, args);
+    }
+    parsedCmds.push(newCmd);
 }
 /*
 type Parser::commentTrim(){

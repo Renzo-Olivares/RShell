@@ -32,7 +32,7 @@ Behind the scenes our `main` will instantiate our `ShellClient`. `ShellClient` w
 We will be using the composite pattern to represent our commands. Our client is our `ShellClient` and our component is `Command`. `Command` had four leaf nodes: `ConnectorAnd`, `ConnectorOr`, and `ConnectorSemiColon`, and `BasicCommand`. `Command` also has a composite which is our `CommandQueue`. 
 
 
-#  Diagram
+#  Diagram 
 ![rshell_omt](images/rshellomt0213.jpg?raw=true)
 
 # Classes
@@ -68,8 +68,10 @@ class UserInput{
 		std::string rawInput;
 	public:
 		UserInput(){}
-		void capture(std::string userInput){}
-		std::string getRaw(){return rawInput;}
+		std::cout << "$ ";
+		std::getline(std::cin, rawInput);
+		
+		std::string getInput(){return rawInput;}
 };
 ```
 
@@ -101,8 +103,9 @@ class Executor{
 		CommandQueue cmdList;
 	public:
 		Executor(){}
-		void add(){} //adds commands to cmdList
-		void run(){} //executes cmdList
+		int runCmds(){}; //executes cmdList
+		int getLastChildStatus(){} //checks status of last child
+
 };
 ```
 
@@ -112,7 +115,9 @@ class Executor{
 class Command{
 	public:
 		Command(){}
-		virtual std::string showCmndDetails(){} //returns string with command/command details
+		virtual std::string cmdString(){} //returns string with command/command details
+		virtual char* getPath(){} //returns path of command
+		virtual char** getArgs(){} //returns argument
 };
 ```
 
@@ -128,7 +133,7 @@ class BasicCommand: Public Command{
 		BasicCommand(){}
 		const char* getPath(){return execp;} //returns executable path
 		char* const* getArgs(){return args;} //returns executable arguments
-		virtual std::string showCmndDetails(){} //returns string with command/command details
+		virtual std::string cmdString(){} //returns string with command/command details
 };
 ```
 
@@ -141,43 +146,44 @@ class CommandQueue: Public Command{
 		queue<Command> cmndLine;
 	public:
 		CommandQueue(){}
-		void addToQueue(){cmdLine.push();}
-		void popFromQueue(){cmdLine.pop();}
-		virtual std::string showCmndDetails(){} //returns string with command/command details
+		char* getPath()
+        	char** getArgs()
+		void addQueue(std::queue<Command*> cmdQ)
+		void addCmd(){cmdLine.push();}
+		void popCmd(){cmdLine.pop();}
+		bool isEmpty()
+        	void clear()
+        	virtual std::string cmdString(){} //returns string with command/command details
 
 };
 ```
 
-## ConnectorAnd
+## Connector
 * Inherits from `Command`
-* Identifies `&&`.
+* Identifies `&&`, `||`, and `;`
 ```c++
-class ConnectorAnd: Public Command{
-	public:
-		ConnectorAnd(){}
-		virtual std::string showCmndDetails(){} //returns string with command/command details
+class Connector: Public Command{
+	private:
+        std::string type;
+    public:
+        Connector(char* connectorType);
+        char* getPath();
+        char** getArgs();
+        virtual std::string cmdString();
 };
 ```
-
-## ConnectorOr
+## ExitCommand
 * Inherits from `Command`
-* Identifies `||`.
+* Exits rshell
 ```c++
-class ConnectorOr: Public Command{
-	public:
-		ConnectorOr(){}
-		virtual std::string showCmndDetails(){} //returns string with command/command details
-};
-```
-
-## ConnectorSemiCol
-* Inherits from `Command`
-* Identifies `;`.
-```c++
-class ConnectorSemiCol: Public Command{
-	public:
-		ConnectorSemiCol(){}
-		virtual std::string showCmndDetails(){} //returns string with command/command details
+class ExitCommand : public Command {
+    private:
+        std::string type;
+    public:
+        ExitCommand(char* exitex);
+        char* getPath();
+        char** getArgs();
+        virtual std::string cmdString();
 };
 ```
 

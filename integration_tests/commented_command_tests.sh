@@ -1,15 +1,14 @@
 #!/bin/sh
 
-#comment
+echo "Testing commented commands"
 
-ls -a
+echo "echo '#'"
+../rshell < "commenta.txt"
+echo
 
-echo "#"
+echo "echo A#"
+../rshell < "commentb.txt"
+echo
 
-echo #
+echo "Comment test complete"
 
-#this is a comment
-
-##comment
-
-comment

@@ -5,8 +5,7 @@
 #include "../header/UserInput.hpp"
 
 /*
-TEST(ParserTest, BCPath){
-
+TEST(UserInputTest, getRaw){
 	EXPECT_EQ();
 }
 */

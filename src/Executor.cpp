@@ -46,6 +46,7 @@ int Executor::runCmds(){
 
 
             //if child process reaches here execvp must have failed
+            perror("execvp");
             exit(1);
         }
         else{//fork() returns process id of child process
@@ -53,10 +54,6 @@ int Executor::runCmds(){
                 exit(1);
             }else{
                 wait_child = waitpid(child_pid,&child_status,0);
-                //std::cout << "Parent: Child PID and exit status " << wait_child << " " << child_status << std::endl;
-                if(child_status != 0){
-                    perror("Command failed to execute!");
-                }
             }
         }
         cmdList->popCmd();

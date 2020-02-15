@@ -5,7 +5,6 @@
 #include "../header/Connector.hpp"
 #include "../header/ExitCommand.hpp"
 
-#include <iostream>
 #include <queue>
 #include <regex>
 #include <boost/regex.hpp>

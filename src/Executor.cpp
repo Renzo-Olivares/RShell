@@ -1,5 +1,5 @@
 #include "../header/Executor.hpp"
-#include <iostream>
+
 Executor::Executor(CommandQueue* cmdQueue){
     cmdList = cmdQueue;
 }

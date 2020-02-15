@@ -1,8 +1,10 @@
-echo a ; echo b
-echo a && echo b
+echo a ; echo b; echo hello; echo lol; echo wow
+echo a && echo b && echo c
 echo a || echo b
 git status || echo a
 echo a || exit
 ls -a && echo "hey"
 ls -a || echo a
+echo a && echo b && echa c || echo lol; echo hello
+echa || echo b && echo wow && echo c; echa f || echo error
 exit

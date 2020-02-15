@@ -10,4 +10,7 @@ echo echo
 git status
 echo cs100
 ls -a
+echo hello world how are you
+echo wow this actually works
+echo awesome
 exit

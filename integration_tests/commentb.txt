@@ -1,2 +1,4 @@
 echo A#
+echo B# && echo c && echo f && echo wow
+echo B && echo wow # && echo error
 exit

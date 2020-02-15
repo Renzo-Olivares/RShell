@@ -20,8 +20,7 @@ TEST(ParserTest, SimpleCmd){
 TEST(ParserTest, WhiteSpaceTrim){
     std::string test = "     echo      ";
     Parser* analyzer = new Parser(test);
-    char* clean  = analyzer->whitespaceTrimLt(test);
-    EXPECT_EQ(std::string(clean), "echo");
+    EXPECT_EQ(analyzer->whitespaceTrimLt(test), "echo");
 }
 
 TEST(ParserTest, CommentTrim){

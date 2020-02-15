@@ -7,6 +7,7 @@ Parser::Parser(std::string rawUserInput){
 void Parser::run(){
     boost::regex re("[^\\s'\"]+|\"([^'\"]*)\"|'([^'\"]*)'");
     std::string cleanInput = commentTrim(userInput);
+    std::string argstring = "";
     auto input_begin = boost::sregex_iterator(cleanInput.begin(), cleanInput.end(), re);
     auto input_end = boost::sregex_iterator();
     int tokencount = 1;
@@ -15,40 +16,60 @@ void Parser::run(){
     char* exec;
     char* args;
     char* connector;
+    bool semi = false;
 
     for( ; input_begin != input_end; ++input_begin ) {
-       char* token = whitespaceTrimLt((*input_begin)[0]);
+       char* token = characterize(whitespaceTrimLt((*input_begin)[0]));
        if(tokencount == 1){
-           exec = whitespaceTrimLt((*input_begin)[0]);
+           args = NULL;
+           exec = token;
            if(position == nummatches){
                //build and push
                buildCmd(exec, args);
                break;
            }
        }else if(tokencount == 2){
-           args = whitespaceTrimLt((*input_begin)[0]);
+           args = token;
+           std::string argstring = std::string(args);
+           if(argstring.at(argstring.length() - 1) == ';'){
+               argstring.pop_back();
+               buildCmd(exec,characterize(argstring));
+               buildCmd(characterize(";"), args);
+               semi = true;
+           }
            if(position == nummatches){
                //build and push
                buildCmd(exec, args);
                break;
            }
-       }else if(tokencount == 3){
-           connector = whitespaceTrimLt((*input_begin)[0]);
+       }else if((*input_begin)[0] == "&&" || (*input_begin)[0] == "||" || (*input_begin)[0] == ";"){
+           connector = token;
+           buildCmd(exec, args);
+           if(position != nummatches){
+                buildCmd(connector, args);
+           }
+       }else if(tokencount > 1){
+           char* blank = " ";
+           args = addTwoChars(args, blank);
+            args = addTwoChars(args, token);
+               std::string argstring = whitespaceTrimLt(std::string(args));
+           if(argstring.at(argstring.length() - 1) == ';'){
+               argstring.pop_back();
+               buildCmd(exec,characterize(argstring));
+               buildCmd(characterize(";"), args);
+               semi = true;
+           }
+            if(position == nummatches){
+               //build and push
+               buildCmd(exec, args);
+               break;
+           }            
        }
-       if(tokencount < 3){ //next token
+       if((*input_begin)[0] == "&&" || (*input_begin)[0] == "||" || (*input_begin)[0] == ";" || semi){
+           tokencount = 1;
+           semi = false;
+       }else if(tokencount < 3){ //next token
            tokencount++;
-       }else{
-           //create command and connector, push onto queue
-            Command* newCmd;
-            if(std::string(exec) == "exit"){
-                newCmd = new ExitCommand(exec);
-            }else{
-                newCmd = new BasicCommand(exec, args);
-            }
-            Command* newConnector =  new Connector(connector);
-            parsedCmds.push(newCmd);
-            parsedCmds.push(newConnector);
-            tokencount = 1; //reset token count after connector
        }
        position++;
     }
@@ -58,8 +79,14 @@ std::queue<Command*> Parser::getParsedCmds(){
     return parsedCmds;
 }
 
-char* Parser::whitespaceTrimLt(std::string rawString){
-    boost::algorithm::trim(rawString);
+char* Parser::addTwoChars(char* A, char* B){
+    char* newChar = (char*) malloc(1 + strlen(A) + strlen(B));
+    strcpy(newChar, A);
+    strcat(newChar, B);
+    return newChar;
+}
+
+char* Parser::characterize(std::string rawString){
     int n = rawString.size();
     char* outp = new char[n + 1];
     std::copy(rawString.begin(), rawString.end(), outp);
@@ -67,11 +94,18 @@ char* Parser::whitespaceTrimLt(std::string rawString){
     return outp;
 }
 
+std::string Parser::whitespaceTrimLt(std::string rawString){
+    return boost::algorithm::trim_copy(rawString);
+}
+
 void Parser::buildCmd(char* execu, char* args){
     Command* newCmd;
     if(std::string(execu) == "exit"){
         newCmd = new ExitCommand(execu);
-    }else{
+    }else if(std::string(execu) == "&&" || std::string(execu) == "||" || std::string(execu) == ";"){
+        newCmd = new Connector(execu);
+    }
+    else{
         newCmd = new BasicCommand(execu, args);
     }
     parsedCmds.push(newCmd);

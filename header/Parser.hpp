@@ -19,9 +19,11 @@ class Parser{
         Parser(std::string rawUserInput);
         void run();
         std::queue<Command*> getParsedCmds();
-        char* whitespaceTrimLt(std::string rawString);
+        char* characterize(std::string rawString);
         void buildCmd(char* execu, char* args);
         std::string commentTrim(std::string rawInput);
+        std::string whitespaceTrimLt(std::string rawString);
+        char* addTwoChars(char* A, char* B);
 };
 
 #endif /* PARSER_HPP */

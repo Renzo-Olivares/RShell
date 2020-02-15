@@ -13,7 +13,6 @@ TEST(ParserTest, SimpleCmd){
     Parser* analyzer = new Parser(testInput);
     analyzer->run();
     std::queue<Command*> parsedCmds = analyzer->getParsedCmds();
-    std::cout << (parsedCmds.front())->cmdString() << std::endl;
     Command* newCmd = parsedCmds.front();
 	EXPECT_EQ(std::string(newCmd->getPath()), "echo");
 	EXPECT_EQ(std::string((newCmd->getArgs())[1]), "hello");

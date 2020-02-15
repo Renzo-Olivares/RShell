@@ -1,5 +1,5 @@
 #include "../header/Executor.hpp"
-
+#include <iostream>
 Executor::Executor(CommandQueue* cmdQueue){
     cmdList = cmdQueue;
 }
@@ -11,7 +11,6 @@ int Executor::runCmds(){
 
         if (cmdList->cmdString() != "cmd"){
             if(cmdList->cmdString() == "&&"){
-                //std::cout << "AND Connector" << std::endl;
                 if(child_status == 0){
                     cmdList->popCmd(); //pop connector
                     continue;

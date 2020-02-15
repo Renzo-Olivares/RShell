@@ -4,6 +4,8 @@
 #include "gtest/gtest.h"
 #include "../header/Parser.hpp"
 #include "../header/Command.hpp"
+#include <iostream>
+#include <string>
 
 
 TEST(ParserTest, SimpleCmd){
@@ -27,6 +29,12 @@ TEST(ParserTest, CommentTrim){
     std::string test = "echo hello# && echo goodbye";
     Parser* analyzer = new Parser(test);
     EXPECT_EQ(analyzer->commentTrim(test), "echo hello");
+}
+
+TEST(ParserTest, Characterize){
+    std::string test = "echo hello";
+    Parser* analyzer = new Parser(test);
+    EXPECT_EQ(std::string(analyzer->characterize(test)), "echo hello");    
 }
 
 #endif //__PARSER_TEST_HPP__

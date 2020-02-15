@@ -120,4 +120,31 @@ TEST(ExecutorTest, SemiColConnector){
 	EXPECT_EQ(runner->getLastChildStatus(), 0);
 }
 
+TEST(ExecutorTest, Parentheses){
+    bool exitf = false;
+	char* exec = "echo";
+    char* args = "hello";
+    char* args2 = "world";
+    char* args3 = "goodbye";
+    char* ands = "&&";
+    char* exit = "exit";
+    CommandQueue* newQueue = new CommandQueue();
+    Command* cmd = new BasicCommand(exec, args);
+    Command* andC = new Connector(ands);
+    Command* parentheses = new CommandQueue();
+    Command* cmdPar1 = new BasicCommand(exec, args2);
+    Command* cmdPar2 = new BasicCommand(exec, args3);
+    Command* exitcmd = new ExitCommand(exit);
+    parentheses->addCmd(cmdPar1);
+    parentheses->addCmd(andC);
+    parentheses->addCmd(exitcmd);
+    newQueue->addCmd(cmd);
+    newQueue->addCmd(andC);
+    newQueue->addCmd(parentheses);
+	Executor* runner = new Executor(newQueue);
+    exitf = runner->runCmds() == 0? false:true;
+
+	EXPECT_EQ(exitf, true);
+}
+
 #endif //__EXECUTOR_TEST_HPP__

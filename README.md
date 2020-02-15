@@ -27,10 +27,11 @@ They will then be prompted for input as follows
 $
 ```
 
-Behind the scenes our `main` will instantiate our `ShellClient`. `ShellClient` will then instantiate the objects we need such as our `UserInput`, `Parser`, `CommandQueue`, and `Executor`. `ShellClient` will then call on our `UserInput` object that will prompt the user for input using the `$` and capture that input. `ShellClient` will then pass that raw input from `UserInput` into our `Parser`. Our `Parser` using regex(regular expressions) will then tokenize our raw input into tokens such as ExecToken, ArgsToken, AndToken, OrToken, and SemiToken. Using these tokens `Parser` will sequentially transform ExecToken and ArgsToken into a `BasicCommand` object and then push that object onto the `CommandQueue`. Similarly, AndToken, OrToken, and SemiToken will be individually transformed into their corresponding `Connector` object and also pushed onto the `CommandQueue`. `ShellClient` will then pass the `CommandQueue` into the `Executor` where it will leverage `fork(), execvp(), and waitpid()` in order to execute the `CommandQueue`. The `Executor` will also take into account connector prescedence and will execute or skip commands as needed.  
+Behind the scenes our `main` will instantiate our `ShellClient`. `ShellClient` will then instantiate the objects we need such as our `UserInput`, `Parser`, `CommandQueue`, and `Executor`. `ShellClient` will then call its member function `init()` in a while loop that exits when the `Executor` returns -1 which is when it encounters the ExitCommand. The member function `init()` calls on our `UserInput` object that will prompt the user for input using the `$` and capture that input. `ShellClient` will then pass that raw input from `UserInput` into our `Parser`. Our `Parser` using regex(regular expressions) will then tokenize our raw input into tokens seperated by whitespace. Using these tokens `Parser` will sequentially transform them into a `BasicCommand`, `ExitCommand`, or `Connector` object depending on the situation and then push that object onto the a queue pf `Command`. `ShellClient` will then pass the queue to the `CommandQueue` object to store and pass into the `Executor` where it will leverage `fork(), execvp(), and waitpid()` in order to execute the `CommandQueue`. The `Executor` will also take into account connector logic and will execute or skip commands as needed.  
 
-We will be using the composite pattern to represent our commands. Our client is our `ShellClient` and our component is `Command`. `Command` had four leaf nodes: `ConnectorAnd`, `ConnectorOr`, and `ConnectorSemiColon`, and `BasicCommand`. `Command` also has a composite which is our `CommandQueue`. 
+We will be using the composite pattern to represent our commands. Our client is our `ShellClient` and our component is `Command`. `Command` had three leaf nodes: `BasicCommand`, `Connector`, and `ExitCommand`. `Command` also has a composite which is our `CommandQueue`. 
 
+Our `Parser` does most of its magic with regex. It seperates the string into tokens by whitespace using a regex pattern, however not whitespace in between quotations. We then loop through our matches keeping a count. If that count is 1 then the match but be an executable. If the count is 2 or greater it must be an argument. As long as it is an argument keep adding the matches together. Once we hit any type of `Connector` reset the count to 1 because after a `Connector` follows an executable. `Parser` also leverages helper functions like `characterize()` which turns a string into a `char*`, and `addTwoChars()` to add arguments, and `whitespaceTrimLt()` to trim trailing and leading whitespaces, and `commentTrim()` to trim the string of anything including and past a `#` not in between quotes.
 
 #  Diagram 
 ![rshell_omt](images/rshellomt0213.jpg?raw=true)
@@ -38,25 +39,17 @@ We will be using the composite pattern to represent our commands. Our client is 
 # Classes
 ## Shell Client
 * Instantiates UserInput to retrieve input from user
+* Instantiates Parser and passes in input from UserInput
 * Instantiates CommandQueue with return value of Parser(UserInput)
 * Instantiates Executor and passes in CommandQueue to be executed
+* Runs a loop until exit command is returned by Executor
 ```c++
 class ShellClient{
+	private:
+		bool exit = false; //exit flag
 	public:
-		ShellClient(){
-			UserInput rawInput = UserInput();
-			Executor runner = Executor()
-			Parser analyzer = Parser();
-			CommandQueue parsedCmnds = CommandQueue();
-
-			while(rawInput is not exit command){
-				rawInput.capture();
-				analyzer.input(rawInput);
-				parsedCmnds.add(analyzer.run());
-				runner.add(parsedCmnds);
-				runner.run();
-			}
-		}
+		ShellClient();
+		void init();
 };
 ```
 
@@ -67,19 +60,15 @@ class UserInput{
 	private:
 		std::string rawInput;
 	public:
-		UserInput(){}
-		std::cout << "$ ";
-		std::getline(std::cin, rawInput);
-		
-		std::string getInput(){return rawInput;}
+		UserInput();
+		std::string getInput(); //return raw input
 };
 ```
 
 ## Parser
 * Takes in user input and tokenizes it into seperate tokens:
-	* ExecToken -> Along with ArgsToken gets transformed into `BasicCommand` object
-	* ArgsToken -> Along with ExecToken gets transformed into `BasicCommand` object
-* Runs analysis and returns a `queue` of `Command` objects that the Executor can run
+	* Builds either BasicCommand, ExitCommand, or Connector depending on the conditions and pushes them onto a `queue` of Command pointers
+* Runs analysis and returns a `queue` of `Command` objects that CommandQueue takes and stores.
 ```c++
 class Parser{
 	 private:
@@ -87,11 +76,13 @@ class Parser{
         std::string userInput;
     public:
         Parser(std::string rawUserInput);
-        void run();
-        std::queue<Command*> getParsedCmds();
-        char* whitespaceTrimLt(std::string rawString);
-        void buildCmd(char* execu, char* args);
-	commentTrim(std::string rawInput);
+        void run(); //parser
+        std::queue<Command*> getParsedCmds(); //return queue of parsed commands
+        char* whitespaceTrimLt(std::string rawString); //trim leading and trailing whitespace
+	char* characterize(std::string rawString); //turn string into char*
+        void buildCmd(char* execu, char* args); //build command
+	commentTrim(std::string rawInput); //trim comment and everything after
+	char* addTwoChars(Char* A, char* B); //add arguments
 };
 ```
 
@@ -104,9 +95,9 @@ class Executor{
 	private:
 		CommandQueue cmdList;
 	public:
-		Executor(){}
-		int runCmds(){}; //executes cmdList
-		int getLastChildStatus(){} //checks status of last child
+		Executor();
+		int runCmds(); //executes cmdList
+		int getLastChildStatus(); //checks status of last child
 
 };
 ```
@@ -117,9 +108,9 @@ class Executor{
 class Command{
 	public:
 		Command(){}
-		virtual std::string cmdString(){} //returns string with command/command details
-		virtual char* getPath(){} //returns path of command
-		virtual char** getArgs(){} //returns argument
+		virtual std::string cmdString(); //returns string with command/command details
+		virtual char* getPath(); //returns path of command
+		virtual char** getArgs(); //returns argument
 };
 ```
 
@@ -133,9 +124,9 @@ class BasicCommand: Public Command{
 		char* const* args; //executable arguments
 	public:
 		BasicCommand(){}
-		const char* getPath(){return execp;} //returns executable path
-		char* const* getArgs(){return args;} //returns executable arguments
-		virtual std::string cmdString(){} //returns string with command/command details
+		const char* getPath();//returns executable path
+		char* const* getArgs();//returns executable arguments
+		virtual std::string cmdString();//returns string with command/command details
 };
 ```
 
@@ -147,15 +138,15 @@ class CommandQueue: Public Command{
 	private:
 		queue<Command> cmndLine;
 	public:
-		CommandQueue(){}
-		char* getPath()
-        	char** getArgs()
-		void addQueue(std::queue<Command*> cmdQ)
-		void addCmd(){cmdLine.push();}
-		void popCmd(){cmdLine.pop();}
-		bool isEmpty()
-        	void clear()
-        	virtual std::string cmdString(){} //returns string with command/command details
+		CommandQueue();
+		char* getPath(); //path from front of queue
+        	char** getArgs(); //args from front of queue
+		void addQueue(std::queue<Command*> cmdQ);
+		void addCmd(); //add command to queue
+		void popCmd(); //pop from queue
+		bool isEmpty(); //check if queue empty
+        	void clear(); //erase queue
+        	virtual std::string cmdString(); //returns string with command/command details
 
 };
 ```
@@ -171,7 +162,7 @@ class Connector: Public Command{
         Connector(char* connectorType);
         char* getPath();
         char** getArgs();
-        virtual std::string cmdString();
+        virtual std::string cmdString(); //returns connector type "&&"  or "||" or ";"
 };
 ```
 ## ExitCommand
@@ -185,7 +176,7 @@ class ExitCommand : public Command {
         ExitCommand(char* exitex);
         char* getPath();
         char** getArgs();
-        virtual std::string cmdString();
+        virtual std::string cmdString(); // returns "exit"
 };
 ```
 
@@ -230,5 +221,4 @@ class ExitCommand : public Command {
 
 
 # Development and Testing Roadmap
-1.  `Parser`
-	* [#21 Handle arguments that contain whitespace](https://github.com/cs100/assignment-renzo_phyllis/issues/21)
+1. All issues closed.

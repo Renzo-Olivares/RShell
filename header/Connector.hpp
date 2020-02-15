@@ -10,6 +10,7 @@ class Connector : public Command {
         Connector(char* connectorType);
         char* getPath();
         char** getArgs();
+        bool isMultiple();
         virtual std::string cmdString();
 };
 

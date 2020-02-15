@@ -35,3 +35,11 @@ void CommandQueue::clear(){
 std::string CommandQueue::cmdString(){
     return (commandList.front())->cmdString();
 }
+
+bool CommandQueue::isMultiple(){
+    return true;
+}
+
+Command* CommandQueue::getFront(){
+    return commandList.front();
+}

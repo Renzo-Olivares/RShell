@@ -11,6 +11,7 @@ class BasicCommand : public Command {
         BasicCommand(char* execToken, char* argToken);
         char* getPath();
         char** getArgs();
+        bool isMultiple();
         virtual std::string cmdString();
 };
 

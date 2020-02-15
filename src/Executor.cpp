@@ -1,5 +1,5 @@
 #include "../header/Executor.hpp"
-
+#include <iostream>
 Executor::Executor(CommandQueue* cmdQueue){
     cmdList = cmdQueue;
 }
@@ -8,6 +8,18 @@ int Executor::runCmds(){
     while(!cmdList->isEmpty()){
         pid_t child_pid; 
         pid_t wait_child; //pid returned by waitpid
+
+        if((cmdList->getFront())->isMultiple()){
+            Executor subrunner = Executor((CommandQueue* ) cmdList->getFront());
+            int exit = subrunner.runCmds();
+            if(exit != 0){
+                cmdList->clear();
+                return -1;
+            }
+            cmdList->popCmd(); ///pop commandqueue 
+            child_status = subrunner.getLastChildStatus();
+            continue;
+        }
 
         if (cmdList->cmdString() != "cmd"){
             if(cmdList->cmdString() == "&&"){

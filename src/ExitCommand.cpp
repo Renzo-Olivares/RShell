@@ -16,6 +16,10 @@ char** ExitCommand::getArgs(){
     return args;
 }
 
+bool ExitCommand::isMultiple(){
+    return false;
+}
+
 std::string ExitCommand::cmdString(){
     return type;
 }

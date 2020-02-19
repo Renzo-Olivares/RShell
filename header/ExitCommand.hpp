@@ -8,9 +8,9 @@ class ExitCommand : public Command {
         std::string type;
     public:
         ExitCommand(char* exitex);
-        char* getPath();
-        char** getArgs();
-        bool isMultiple();
+        virtual char* getPath();
+        virtual char** getArgs();
+        virtual bool isMultiple();
         virtual std::string cmdString();
 };
 

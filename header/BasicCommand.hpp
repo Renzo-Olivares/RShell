@@ -9,10 +9,11 @@ class BasicCommand : public Command {
         std::vector<char*> command;
     public:
         BasicCommand(char* execToken, char* argToken);
-        char* getPath();
-        char** getArgs();
-        bool isMultiple();
+        virtual char* getPath();
+        virtual char** getArgs();
+        virtual bool isMultiple();
         virtual std::string cmdString();
+        std::vector<char*> getRawCmd();
 };
 
 #endif /* BASICCOMMAND_HPP */

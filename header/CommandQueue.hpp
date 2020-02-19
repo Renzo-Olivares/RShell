@@ -8,16 +8,16 @@ class CommandQueue : public Command {
     private:
         std::queue<Command*> commandList;
     public:
-        char* getPath();
-        char** getArgs();
-        void addQueue(std::queue<Command*> cmdQ);
-        void addCmd(Command* command);
+        virtual char* getPath();
+        virtual char** getArgs();
+        virtual void addQueue(std::queue<Command*> cmdQ);
+        virtual void addCmd(Command* command);
+        virtual std::string cmdString();
+        virtual bool isMultiple();
         void popCmd();
         bool isEmpty();
         void clear();
-        bool isMultiple();
         Command* getFront();
-        virtual std::string cmdString();
 };
 
 #endif /* COMMANDQUEUE_HPP */

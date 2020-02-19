@@ -21,3 +21,7 @@ bool BasicCommand::isMultiple(){
 std::string BasicCommand::cmdString(){
     return "cmd";
 }
+
+std::vector<char*> BasicCommand::getRawCmd(){
+    return command;
+}

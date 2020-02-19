@@ -1,6 +1,7 @@
 #ifndef PARSER_HPP
 #define PARSER_HPP
 
+#include "../header/CommandQueue.hpp"
 #include "../header/BasicCommand.hpp"
 #include "../header/Connector.hpp"
 #include "../header/ExitCommand.hpp"

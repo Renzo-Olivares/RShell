@@ -23,20 +23,8 @@ void Parser::run(){
        if(tokencount == 1){
            args = NULL;
            exec = token;
-           if(position == nummatches){
-               //build and push
-               buildCmd(exec, args);
-               break;
-           }
-       }else if(tokencount == 2){
-           args = token;
-           std::string argstring = std::string(args);
-           if(argstring.at(argstring.length() - 1) == ';'){
-               argstring.pop_back();
-               buildCmd(exec,characterize(argstring));
-               buildCmd(characterize(";"), args);
-               semi = true;
-           }
+           std::string execstring = std::string(exec);
+
            if(position == nummatches){
                //build and push
                buildCmd(exec, args);
@@ -49,14 +37,20 @@ void Parser::run(){
                 buildCmd(connector, args);
            }
        }else if(tokencount > 1){
-           char* blank = " ";
-           args = addTwoChars(args, blank);
-            args = addTwoChars(args, token);
+            if (tokencount  == 2){
+                args = token;
+            }else{
+                char* blank = " ";
+                args = addTwoChars(args, blank);
+                args = addTwoChars(args, token);
+            }
                std::string argstring = whitespaceTrimLt(std::string(args));
            if(argstring.at(argstring.length() - 1) == ';'){
                argstring.pop_back();
+
                buildCmd(exec,characterize(argstring));
                buildCmd(characterize(";"), args);
+               
                semi = true;
            }
             if(position == nummatches){

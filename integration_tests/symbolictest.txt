@@ -3,6 +3,8 @@
 [ -f "../test" ]
 [ -d ../unit_tests ]
 [ -e ../test ] && echo success
+[ -e ../rshell ]; echo greatness
+[ -e ../rshell ] ; echo greatness2
 [ -d ../integration_tests ]
 [ -f ../integration_tests/simple.txt ]
 [ -f "simple.txt" ]
@@ -10,4 +12,5 @@
 [ -f ../integration_tests/simple.txt ] && echo awesome
 [ -f "../integration_tests/simple.txt" ] &&  echo this works
 [ -f '../integration_tests/simple.txt' ] &&  echo excellent
+[ ../test ] && echo works great
 exit

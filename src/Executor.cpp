@@ -2,6 +2,7 @@
 
 Executor::Executor(CommandQueue* cmdQueue){
     cmdList = cmdQueue;
+    bracketError = false;
 }
 
 int Executor::runCmds(){
@@ -48,6 +49,24 @@ int Executor::runCmds(){
                 cmdList->popCmd(); //pop connector
                 continue;
             }
+        }else{
+            if(std::string(cmdList->getPath()) == "test" || std::string(cmdList->getPath()) == "["){
+                //run test command
+                bool fileFound  = runTestCmd();
+                cmdList->popCmd();
+                if(bracketError){
+                    child_status = 256;
+                    std::cout << "Command error" << std::endl;
+                    bracketError = false;
+                }else if(!fileFound){
+                    child_status = 256;
+                    std::cout << "(False)" << std::endl; 
+                }else {
+                    child_status = 0;
+                    std::cout << "(True)" << std::endl;
+                }
+                continue;
+            }
         }
 
         child_pid = fork();
@@ -74,4 +93,58 @@ int Executor::runCmds(){
 
 int Executor::getLastChildStatus(){
     return child_status;
+}
+
+bool Executor::runTestCmd(){
+    std::vector<char*> testvec = (cmdList->getFront())->getRawCmd();
+    Parser subParser = Parser("null");
+    struct stat sb;
+    std::string fullArgString = testvec.at(1);
+    std::string testFlag = "-e";
+    char* testArgs;
+    
+    if(std::string(cmdList->getPath()) == "["){
+        std::cout << fullArgString.at(fullArgString.length() - 1) << std::endl;
+        
+        if(fullArgString.at(fullArgString.length() - 1) != ']'){
+            bracketError = true;
+            perror("bash");
+            return NULL;
+        }
+        //trim bracket from args
+        fullArgString.pop_back();
+    }
+
+    if(fullArgString.at(0) == '-'){
+        testFlag = "-" + fullArgString[1];
+        fullArgString = fullArgString.substr(3);
+    }
+
+    testArgs = subParser.characterize(subParser.whitespaceTrimLt(fullArgString));
+    stat(testArgs, &sb);
+    //test command logic
+    if(testFlag == "-f"){
+        switch(sb.st_mode & S_IFMT){
+            case S_IFREG:             
+                return true;
+            default:                    
+                return false;
+        }
+    }else if(testFlag == "-d"){
+        switch(sb.st_mode & S_IFMT){
+            case S_IFDIR:               
+                return true;
+            default:                  
+                return false;
+        }
+    }else{
+        switch(sb.st_mode & S_IFMT){
+            case S_IFDIR:            
+                return true;
+            case S_IFREG:             
+                return true;
+            default:                      
+                return false;
+        }
+    }
 }

@@ -131,5 +131,5 @@ std::string Parser::popQuotes(std::string qString){
         return qString;
     }
 
-    return qlessString;
+    return whitespaceTrimLt(qlessString);
 }

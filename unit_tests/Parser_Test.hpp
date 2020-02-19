@@ -36,4 +36,28 @@ TEST(ParserTest, Characterize){
     EXPECT_EQ(std::string(analyzer->characterize(test)), "echo hello");    
 }
 
+TEST(ParserTest, PopQuotesDouble){
+    std::string test = "\"echo hello\"";
+    Parser* analyzer = new Parser("null");
+    EXPECT_EQ(analyzer->popQuotes(test), "echo hello");    
+}
+
+TEST(ParserTest, PopQuotesSingle){
+    std::string test = "'echo hello'";
+    Parser* analyzer = new Parser("null");
+    EXPECT_EQ(analyzer->popQuotes(test), "echo hello");    
+}
+
+TEST(ParserTest, PopQuotesErrorSingle){
+    std::string test = "'echo hello";
+    Parser* analyzer = new Parser("null");
+    EXPECT_EQ(analyzer->popQuotes(test), "'echo hello");    
+}
+
+TEST(ParserTest, PopQuotesErrorDouble){
+    std::string test = "\"echo hello";
+    Parser* analyzer = new Parser("null");
+    EXPECT_EQ(analyzer->popQuotes(test), "\"echo hello");    
+}
+
 #endif //__PARSER_TEST_HPP__

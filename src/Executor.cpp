@@ -105,7 +105,6 @@ bool Executor::runTestCmd(){
     int backPos = fullArgString.length() - 1;
     
     if(std::string(cmdList->getPath()) == "["){
-        std::cout << fullArgString.at(backPos) << std::endl;
         
         if(fullArgString.at(backPos) != ']'){
             bracketError = true;

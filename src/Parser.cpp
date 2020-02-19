@@ -50,7 +50,7 @@ void Parser::run(){
 
                buildCmd(exec,characterize(argstring));
                buildCmd(characterize(";"), args);
-               
+
                semi = true;
            }
             if(position == nummatches){
@@ -110,4 +110,24 @@ std::string Parser::commentTrim(std::string rawInput){
     std::smatch m;
     std::regex_search(rawInput, m, re);
     return rawInput.substr(0, m.position(0));
+}
+
+std::string Parser::popQuotes(std::string qString){
+    std::string qlessString;
+
+    if(qString.at(0) == '"'){
+        if(qString.at(qString.length() - 1) == '"'){
+            qlessString = qString.substr(1,qString.length() - 2);
+        }else{
+            return qString; //no matching quotes return original
+        }
+    }else if(qString.at(0) == '\''){
+        if(qString.at(qString.length() - 1) == '\''){
+            qlessString = qString.substr(1,qString.length() - 2);
+        }else{
+            return qString; //no matching quotes return original
+        }
+    }
+
+    return qlessString;
 }

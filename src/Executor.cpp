@@ -102,11 +102,12 @@ bool Executor::runTestCmd(){
     std::string fullArgString = testvec.at(1);
     std::string testFlag = "-e";
     char* testArgs;
+    int backPos = fullArgString.length() - 1;
     
     if(std::string(cmdList->getPath()) == "["){
-        std::cout << fullArgString.at(fullArgString.length() - 1) << std::endl;
+        std::cout << fullArgString.at(backPos) << std::endl;
         
-        if(fullArgString.at(fullArgString.length() - 1) != ']'){
+        if(fullArgString.at(backPos) != ']'){
             bracketError = true;
             perror("bash");
             return NULL;
@@ -120,7 +121,9 @@ bool Executor::runTestCmd(){
         fullArgString = fullArgString.substr(3);
     }
 
-    testArgs = subParser.characterize(subParser.whitespaceTrimLt(fullArgString));
+    fullArgString = subParser.whitespaceTrimLt(fullArgString);
+    fullArgString = subParser.popQuotes(fullArgString);
+    testArgs = subParser.characterize(fullArgString);
     stat(testArgs, &sb);
     //test command logic
     if(testFlag == "-f"){

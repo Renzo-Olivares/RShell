@@ -24,6 +24,7 @@ class Parser{
         std::string commentTrim(std::string rawInput);
         std::string whitespaceTrimLt(std::string rawString);
         char* addTwoChars(char* A, char* B);
+        std::string popQuotes(std::string qString);
 };
 
 #endif /* PARSER_HPP */

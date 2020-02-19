@@ -1,0 +1,13 @@
+[ -e ../test ]
+[ -e nothere.txt ] || echo "error"
+[ -f "../test" ]
+[ -d ../unit_tests ]
+[ -e ../test ] && echo success
+[ -d ../integration_tests ]
+[ -f ../integration_tests/simple.txt ]
+[ -f "simple.txt" ]
+[ -f '../integration_tests/simple.txt' ]
+[ -f ../integration_tests/simple.txt ] && echo awesome
+[ -f "../integration_tests/simple.txt" ] &&  echo this works
+[ -f '../integration_tests/simple.txt' ] &&  echo excellent
+exit

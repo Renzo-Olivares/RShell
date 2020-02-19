@@ -127,6 +127,8 @@ std::string Parser::popQuotes(std::string qString){
         }else{
             return qString; //no matching quotes return original
         }
+    }else{
+        return qString;
     }
 
     return qlessString;

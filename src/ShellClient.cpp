@@ -1,6 +1,8 @@
 #include "../header/ShellClient.hpp"
 
 ShellClient::ShellClient(){
+    exit = false;
+    
     while(!exit){
         init();
     }

@@ -12,7 +12,7 @@
 
 class ShellClient {
     private:
-        bool exit = false;
+        bool exit;
     public:
         ShellClient();
         void init();

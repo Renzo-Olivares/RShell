@@ -147,4 +147,136 @@ TEST(ExecutorTest, Parentheses){
 	EXPECT_EQ(exitf, true);
 }
 
+TEST(ExecutorTest, LiteralTest){
+	char* testex = "test";
+    char* testpath = "-e test";
+    CommandQueue* newQueue = new CommandQueue();
+    Command* testcmd = new BasicCommand(testex, testpath);
+    newQueue->addCmd(testcmd);
+	Executor* runner = new Executor(newQueue);
+    int run = runner->runCmds();
+
+	EXPECT_EQ(runner->getLastChildStatus(), 0);
+}
+
+TEST(ExecutorTest, LiteralNoFlagTest){
+	char* testex = "test";
+    char* testpath = "test";
+    CommandQueue* newQueue = new CommandQueue();
+    Command* testcmd = new BasicCommand(testex, testpath);
+    newQueue->addCmd(testcmd);
+	Executor* runner = new Executor(newQueue);
+    int run = runner->runCmds();
+
+	EXPECT_EQ(runner->getLastChildStatus(), 0);
+}
+
+TEST(ExecutorTest, LiteralDoubleQuotesTest){
+	char* testex = "test";
+    char* testpath = "-e \"test\"";
+    CommandQueue* newQueue = new CommandQueue();
+    Command* testcmd = new BasicCommand(testex, testpath);
+    newQueue->addCmd(testcmd);
+	Executor* runner = new Executor(newQueue);
+    int run = runner->runCmds();
+
+	EXPECT_EQ(runner->getLastChildStatus(), 0);
+}
+
+TEST(ExecutorTest, LiteralSingleQuotesTest){
+	char* testex = "test";
+    char* testpath = "-e 'test'";
+    CommandQueue* newQueue = new CommandQueue();
+    Command* testcmd = new BasicCommand(testex, testpath);
+    newQueue->addCmd(testcmd);
+	Executor* runner = new Executor(newQueue);
+    int run = runner->runCmds();
+
+	EXPECT_EQ(runner->getLastChildStatus(), 0);
+}
+
+TEST(ExecutorTest, SymbolicTest){
+	char* testex = "[";
+    char* testpath = "-e test ]";
+    CommandQueue* newQueue = new CommandQueue();
+    Command* testcmd = new BasicCommand(testex, testpath);
+    newQueue->addCmd(testcmd);
+	Executor* runner = new Executor(newQueue);
+    int run = runner->runCmds();
+
+	EXPECT_EQ(runner->getLastChildStatus(), 0);
+}
+
+TEST(ExecutorTest, SymbolicDoubleQuotesTest){
+	char* testex = "[";
+    char* testpath = "-e \"test\" ]";
+    CommandQueue* newQueue = new CommandQueue();
+    Command* testcmd = new BasicCommand(testex, testpath);
+    newQueue->addCmd(testcmd);
+	Executor* runner = new Executor(newQueue);
+    int run = runner->runCmds();
+
+	EXPECT_EQ(runner->getLastChildStatus(), 0);
+}
+
+TEST(ExecutorTest, SymbolicSingleQuotesTest){
+	char* testex = "[";
+    char* testpath = "-e 'test' ]";
+    CommandQueue* newQueue = new CommandQueue();
+    Command* testcmd = new BasicCommand(testex, testpath);
+    newQueue->addCmd(testcmd);
+	Executor* runner = new Executor(newQueue);
+    int run = runner->runCmds();
+
+	EXPECT_EQ(runner->getLastChildStatus(), 0);
+}
+
+TEST(ExecutorTest, SymbolicNoFlagTest){
+	char* testex = "[";
+    char* testpath = "test ]";
+    CommandQueue* newQueue = new CommandQueue();
+    Command* testcmd = new BasicCommand(testex, testpath);
+    newQueue->addCmd(testcmd);
+	Executor* runner = new Executor(newQueue);
+    int run = runner->runCmds();
+
+	EXPECT_EQ(runner->getLastChildStatus(), 0);
+}
+
+TEST(ExecutorTest, LiteralTestFail){
+	char* testex = "test";
+    char* testpath = "-e nothere";
+    CommandQueue* newQueue = new CommandQueue();
+    Command* testcmd = new BasicCommand(testex, testpath);
+    newQueue->addCmd(testcmd);
+	Executor* runner = new Executor(newQueue);
+    int run = runner->runCmds();
+
+	EXPECT_EQ(runner->getLastChildStatus(), 256);
+}
+
+TEST(ExecutorTest, SymbolicTestBracketFail){
+	char* testex = "[";
+    char* testpath = "-e nothere";
+    CommandQueue* newQueue = new CommandQueue();
+    Command* testcmd = new BasicCommand(testex, testpath);
+    newQueue->addCmd(testcmd);
+	Executor* runner = new Executor(newQueue);
+    int run = runner->runCmds();
+
+	EXPECT_EQ(runner->getLastChildStatus(), 256);
+}
+
+TEST(ExecutorTest, SymbolicTestFail){
+	char* testex = "[";
+    char* testpath = "-e nothere ]";
+    CommandQueue* newQueue = new CommandQueue();
+    Command* testcmd = new BasicCommand(testex, testpath);
+    newQueue->addCmd(testcmd);
+	Executor* runner = new Executor(newQueue);
+    int run = runner->runCmds();
+
+	EXPECT_EQ(runner->getLastChildStatus(), 256);
+}
+
 #endif //__EXECUTOR_TEST_HPP__

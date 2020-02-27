@@ -1,4 +1,5 @@
 #include "../header/Parser.hpp"
+#include <iostream>
 
 Parser::Parser(std::string rawUserInput){
     userInput = rawUserInput;
@@ -23,8 +24,7 @@ void Parser::run(){
        if(tokencount == 1){
            args = NULL;
            exec = token;
-           std::string execstring = std::string(exec);
-
+           //std::string execstring = std::string(exec);
            if(position == nummatches){
                //build and push
                buildCmd(exec, args);
@@ -44,13 +44,13 @@ void Parser::run(){
                 args = addTwoChars(args, blank);
                 args = addTwoChars(args, token);
             }
-               std::string argstring = whitespaceTrimLt(std::string(args));
-           if(argstring.at(argstring.length() - 1) == ';'){
+            std::string argstring = whitespaceTrimLt(std::string(args));
+            if(argstring.at(argstring.length() - 1) == ';'){
                argstring.pop_back();
 
                buildCmd(exec,characterize(argstring));
                buildCmd(characterize(";"), args);
-
+            //Hehe you can do it budddddyy
                semi = true;
            }
             if(position == nummatches){
@@ -67,6 +67,11 @@ void Parser::run(){
        }
        position++;
     }
+
+    buildPrescedenceQueue();
+    std::queue<Command*> mirrorQueue = mirror(parsedCmds);
+    std::queue<Command*> shyardQueue = shuntingYard(mirrorQueue);
+    buildTree(shyardQueue);
 }
 
 std::queue<Command*> Parser::getParsedCmds(){
@@ -132,4 +137,189 @@ std::string Parser::popQuotes(std::string qString){
     }
 
     return whitespaceTrimLt(qlessString);
+}
+
+std::queue<Command*> Parser::mirror(std::queue<Command*> cmdQ){
+    std::queue<Command*> reversedQueue;
+    std::vector<Command*> origVect;
+
+    while(!cmdQ.empty()){
+        origVect.push_back(cmdQ.front());
+        cmdQ.pop();
+    }
+
+    std::reverse(origVect.begin(), origVect.end());
+
+    for(auto cmd: origVect){
+        if(cmd->cmdString() == "("){
+            cmd = new Connector(")");
+        }else if(cmd->cmdString() == ")"){
+            cmd = new Connector("(");
+        }
+        reversedQueue.push(cmd);
+    }
+
+    return reversedQueue;
+}
+
+std::queue<Command*> Parser::shuntingYard(std::queue<Command*> preSyQueue){
+    std::stack<Command*> operatorStack;
+    std::queue<Command*> outputQueue;
+
+    while(!preSyQueue.empty()){
+
+        Command* currCmd = preSyQueue.front();
+        std::string token = currCmd->cmdString();
+
+        if(token == "cmd" || token == "exit"){
+            outputQueue.push(currCmd);
+        }else if(token == "&&" || token == "||" || token == ";"){
+
+            while(!operatorStack.empty() && (operatorStack.top())->cmdString() != "("){
+                outputQueue.push(operatorStack.top());
+                operatorStack.pop();
+            }
+
+            operatorStack.push(currCmd);
+        }else if(token == "("){
+            operatorStack.push(currCmd);
+        }else if(token == ")"){
+
+            while(!operatorStack.empty() && (operatorStack.top())->cmdString() != "("){
+                outputQueue.push(operatorStack.top());
+                operatorStack.pop();
+            }
+
+            if(operatorStack.empty()){
+                //there is mismatched parentheses
+            }
+
+            if((operatorStack.top())->cmdString() == "("){
+                operatorStack.pop();
+            }
+        }
+        preSyQueue.pop();
+    }
+
+    //if operator stack not null pop 
+    while(!operatorStack.empty()){
+        if((operatorStack.top())->cmdString() == "(" || (operatorStack.top())->cmdString() == ")"){
+            //if there is a parentheses at the top of the stack then there is mismatched parentheses
+        }
+        outputQueue.push(operatorStack.top());
+        operatorStack.pop();
+    }
+
+    return outputQueue;
+}
+
+void Parser::inOrder(struct Node* node, std::queue<Command*> *inorderQueue){
+    if(node == NULL){
+        return;
+    }
+
+    inOrder(node->left, inorderQueue);
+/*
+    std::cout << node->cmd->cmdString() << std::endl;
+
+    if(node->cmd->cmdString() == "cmd"){
+        std::vector<char*> newv = node->cmd->getRawCmd();
+        std::cout << node->cmd->getPath() << " " << newv[1] << std::endl;
+    }
+*/
+    inorderQueue->push(node->cmd);
+
+    inOrder(node->right, inorderQueue);
+}
+
+void Parser::buildTree(std::queue<Command*> outQueue){
+    std::stack<Node*> operandStack;
+
+    while(!outQueue.empty()){
+        if(outQueue.front()->cmdString() == "cmd" || outQueue.front()->cmdString() == "exit"){
+            operandStack.push(new Node(outQueue.front()));
+        }else{
+            Node* opr1 = new Node(outQueue.front());
+            Node* t1;
+            Node* t2;
+
+            t1 = operandStack.top();
+            operandStack.pop();
+
+            t2 = operandStack.top();
+            operandStack.pop();
+            
+            opr1->right = t2;
+            opr1->left = t1; 
+
+            operandStack.push(opr1);
+        }
+        outQueue.pop();
+    }
+
+    std::queue<Command*> empty;
+    std::queue<Command*> inorderQueue;
+    std::queue<Command*> *queue;
+    std::swap(parsedCmds, empty);
+    std::queue<Command*> *inorder = &inorderQueue;
+    inOrder(operandStack.top(), inorder);
+    std::swap(parsedCmds, inorderQueue);
+}
+
+void Parser::buildPrescedenceQueue(){
+    std::queue<Command*> prescQueue;
+
+    while(!parsedCmds.empty()){
+        Command* currentCmd = parsedCmds.front();
+        if(currentCmd->cmdString() == "cmd"){
+            std::string cleanexec;
+            std::string cleanargs;
+            std::string execstring = currentCmd->getPath();
+            std::vector<char*> rawCmd = currentCmd->getRawCmd();
+            std::string argstring;
+            if(rawCmd[1] != NULL){
+                argstring = rawCmd[1];
+            }
+            int rightparCt = 0;
+            bool parenstop = false;
+
+            for(int i = 0; i < execstring.length(); i++){
+                if(execstring[i] == '('){
+                    Command* leftPar = new Connector("(");
+                    prescQueue.push(leftPar);
+                }else{
+                    cleanexec += execstring[i];
+                }
+            }
+
+            std::reverse(argstring.begin(), argstring.end());
+
+            for(int i = 0; i < argstring.length(); i++){
+                if(argstring[i] == ')' && !parenstop){
+                    rightparCt++;
+                }else{
+                    parenstop = true;
+                    cleanargs += argstring[i];
+                }
+            }
+
+            //reverse cleanargs
+            std::reverse(cleanargs.begin(), cleanargs.end());
+
+            if(rawCmd[1] == NULL){
+                prescQueue.push(new BasicCommand(characterize(cleanexec), NULL));                
+            }else{
+                prescQueue.push(new BasicCommand(characterize(cleanexec), characterize(cleanargs)));
+            }
+
+            for(int i = 0; i < rightparCt; i++){
+                prescQueue.push(new Connector(")"));
+            }
+        }else{
+            //if a connector just push it onto the queue
+            prescQueue.push(currentCmd);
+        }
+        parsedCmds.pop();
+    }
+    std::swap(parsedCmds, prescQueue);
 }

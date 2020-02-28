@@ -6,6 +6,8 @@ Parser::Parser(std::string rawUserInput){
 
 int Parser::run(){
     boost::regex re("[^\\s'\"]+|\"([^'\"]*)\"|'([^'\"]*)'");
+    std::regex e("(;)(?=[^(\"|')]*(?:[(\"|')][^(\"|')]*[(\"|')][^(\"|')]*)*$)");
+    userInput = std::regex_replace(userInput, e, " ; ");
     std::string cleanInput = commentTrim(userInput);
     std::string argstring = "";
     auto input_begin = boost::sregex_iterator(cleanInput.begin(), cleanInput.end(), re);
@@ -16,7 +18,6 @@ int Parser::run(){
     char* exec;
     char* args;
     char* connector;
-    bool semi = false;
 
     for( ; input_begin != input_end; ++input_begin ) {
        char* token = characterize(whitespaceTrimLt((*input_begin)[0]));
@@ -24,14 +25,6 @@ int Parser::run(){
            args = NULL;
            exec = token;
 
-            std::string execstring = whitespaceTrimLt(std::string(exec));
-            if(execstring.at(execstring.length() - 1) == ';'){
-                execstring.pop_back();
-                buildCmd(characterize(execstring),args);
-                buildCmd(characterize(";"), args);
-            //Hehe you can do it budddddyy
-                semi = true;
-            }
            if(position == nummatches){
                //build and push
                buildCmd(exec, args);
@@ -51,25 +44,15 @@ int Parser::run(){
                 args = addTwoChars(args, blank);
                 args = addTwoChars(args, token);
             }
-            std::string argstring = whitespaceTrimLt(std::string(args));
-            if(argstring.at(argstring.length() - 1) == ';'){
-               argstring.pop_back();
 
-               buildCmd(exec,characterize(argstring));
-               buildCmd(characterize(";"), args);
-            //Hehe you can do it budddddyy
-               semi = true;
-           }
             if(position == nummatches){
                //build and push
                buildCmd(exec, args);
                break;
            }            
        }
-       if((*input_begin)[0] == "&&" || (*input_begin)[0] == "||" || (*input_begin)[0] == ";" || semi){
+       if((*input_begin)[0] == "&&" || (*input_begin)[0] == "||" || (*input_begin)[0] == ";"){
            tokencount = 1;
-           semi = false;
-           std::cout << "here" << std::endl;
        }else if(tokencount < 3){ //next token
            tokencount++;
        }

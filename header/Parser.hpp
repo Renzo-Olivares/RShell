@@ -22,7 +22,7 @@ class Parser{
         Node* cmndTree;
     public:
         Parser(std::string rawUserInput);
-        void run();
+        int run();
         char* characterize(std::string rawString);
         void buildCmd(char* execu, char* args);
         std::string commentTrim(std::string rawInput);

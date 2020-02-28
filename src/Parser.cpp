@@ -4,7 +4,7 @@ Parser::Parser(std::string rawUserInput){
     userInput = rawUserInput;
 }
 
-void Parser::run(){
+int Parser::run(){
     boost::regex re("[^\\s'\"]+|\"([^'\"]*)\"|'([^'\"]*)'");
     std::string cleanInput = commentTrim(userInput);
     std::string argstring = "";
@@ -70,7 +70,14 @@ void Parser::run(){
     buildPrescedenceQueue();
     std::queue<Command*> mirrorQueue = mirror(parsedCmds);
     std::queue<Command*> shyardQueue = shuntingYard(mirrorQueue);
+
+    if(shyardQueue.empty()){
+        std::cout << "You have mismatched parentheses please re-enter command and try again." << std::endl;
+        return -1;
+    }
+
     buildTree(shyardQueue);
+    return 0;
 }
 
 char* Parser::addTwoChars(char* A, char* B){
@@ -160,6 +167,7 @@ std::queue<Command*> Parser::mirror(std::queue<Command*> cmdQ){
 std::queue<Command*> Parser::shuntingYard(std::queue<Command*> preSyQueue){
     std::stack<Command*> operatorStack;
     std::queue<Command*> outputQueue;
+    std::queue<Command*> empty;
 
     while(!preSyQueue.empty()){
 
@@ -181,6 +189,7 @@ std::queue<Command*> Parser::shuntingYard(std::queue<Command*> preSyQueue){
 
             if(operatorStack.empty()){
                 //there is mismatched parentheses
+                return empty;
             }
 
             if((operatorStack.top())->cmdString() == "("){
@@ -194,6 +203,7 @@ std::queue<Command*> Parser::shuntingYard(std::queue<Command*> preSyQueue){
     while(!operatorStack.empty()){
         if((operatorStack.top())->cmdString() == "(" || (operatorStack.top())->cmdString() == ")"){
             //if there is a parentheses at the top of the stack then there is mismatched parentheses
+            return empty;
         }
         outputQueue.push(operatorStack.top());
         operatorStack.pop();

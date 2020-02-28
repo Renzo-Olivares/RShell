@@ -2,7 +2,6 @@
 #define COMMAND_HPP
 
 #include <string>
-#include <queue>
 #include <vector>
 
 class Command{

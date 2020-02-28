@@ -74,10 +74,6 @@ void Parser::run(){
     buildTree(shyardQueue);
 }
 
-std::queue<Command*> Parser::getParsedCmds(){
-    return parsedCmds;
-}
-
 char* Parser::addTwoChars(char* A, char* B){
     char* newChar = (char*) malloc(1 + strlen(A) + strlen(B));
     strcpy(newChar, A);

@@ -22,7 +22,6 @@ class Parser{
     public:
         Parser(std::string rawUserInput);
         void run();
-        std::queue<Command*> getParsedCmds();
         char* characterize(std::string rawString);
         void buildCmd(char* execu, char* args);
         std::string commentTrim(std::string rawInput);

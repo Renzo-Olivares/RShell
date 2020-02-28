@@ -1,5 +1,4 @@
 #include "../header/Parser.hpp"
-#include <iostream>
 
 Parser::Parser(std::string rawUserInput){
     userInput = rawUserInput;

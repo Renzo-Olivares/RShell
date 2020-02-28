@@ -6,6 +6,7 @@
 #include "../header/ExitCommand.hpp"
 #include "../header/Node.hpp"
 
+#include <iostream>
 #include <queue>
 #include <regex>
 #include <algorithm>

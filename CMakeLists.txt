@@ -19,7 +19,6 @@ ADD_EXECUTABLE(rshell
     src/Connector.cpp
     src/UserInput.cpp
     src/ExitCommand.cpp
-    src/CommandQueue.cpp
 )
 
 ADD_EXECUTABLE(test
@@ -28,7 +27,6 @@ ADD_EXECUTABLE(test
     src/Command.cpp
     src/Connector.cpp
     src/ExitCommand.cpp
-    src/CommandQueue.cpp
     src/Executor.cpp
     src/Parser.cpp
     src/UserInput.cpp

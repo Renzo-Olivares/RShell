@@ -6,7 +6,7 @@
 #include "../header/BasicCommand.hpp"
 #include "../header/Parser.hpp"
 #include "../header/UserInput.hpp"
-#include "../header/CommandQueue.hpp"
+#include "../header/Node.hpp"
 
 #include <queue>
 

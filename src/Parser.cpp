@@ -24,6 +24,14 @@ int Parser::run(){
            args = NULL;
            exec = token;
 
+            std::string execstring = whitespaceTrimLt(std::string(exec));
+            if(execstring.at(execstring.length() - 1) == ';'){
+                execstring.pop_back();
+                buildCmd(characterize(execstring),args);
+                buildCmd(characterize(";"), args);
+            //Hehe you can do it budddddyy
+                semi = true;
+            }
            if(position == nummatches){
                //build and push
                buildCmd(exec, args);
@@ -61,6 +69,7 @@ int Parser::run(){
        if((*input_begin)[0] == "&&" || (*input_begin)[0] == "||" || (*input_begin)[0] == ";" || semi){
            tokencount = 1;
            semi = false;
+           std::cout << "here" << std::endl;
        }else if(tokencount < 3){ //next token
            tokencount++;
        }

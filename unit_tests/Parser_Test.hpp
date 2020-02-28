@@ -11,16 +11,6 @@
 #include <queue>
 
 
-TEST(ParserTest, SimpleCmd){
-    std::string testInput = "echo hello";
-    Parser* analyzer = new Parser(testInput);
-    analyzer->run();
-    std::queue<Command*> parsedCmds = analyzer->getParsedCmds();
-    Command* newCmd = parsedCmds.front();
-	EXPECT_EQ(std::string(newCmd->getPath()), "echo");
-	EXPECT_EQ(std::string((newCmd->getArgs())[1]), "hello");
-}
-
 TEST(ParserTest, WhiteSpaceTrim){
     std::string test = "     echo      ";
     Parser* analyzer = new Parser(test);

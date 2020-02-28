@@ -3,7 +3,6 @@
 
 #include "../header/Command.hpp"
 #include "../header/BasicCommand.hpp"
-#include "../header/CommandQueue.hpp"
 #include "../header/Parser.hpp"
 #include <queue>
 #include <iostream>
@@ -14,14 +13,18 @@
 
 class Executor{
     private:
-        CommandQueue* cmdList;
         int child_status;
         bool bracketError;
+        bool andflag;
+        bool orflag;
+        bool exitflag;
     public:
-        Executor(CommandQueue* cmdQueue);
-        int runCmds();
+        Executor();
+        int runCmds(Command* cmd);
         int getLastChildStatus();
-        bool runTestCmd();
+        bool runTestCmd(Command* cmd);
+        void inOrder(Node* cmndNode);
+        bool isExit();
 };
 
 #endif /* EXECUTOR_HPP */

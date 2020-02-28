@@ -24,7 +24,7 @@ void Parser::run(){
        if(tokencount == 1){
            args = NULL;
            exec = token;
-           //std::string execstring = std::string(exec);
+
            if(position == nummatches){
                //build and push
                buildCmd(exec, args);
@@ -174,13 +174,6 @@ std::queue<Command*> Parser::shuntingYard(std::queue<Command*> preSyQueue){
         if(token == "cmd" || token == "exit"){
             outputQueue.push(currCmd);
         }else if(token == "&&" || token == "||" || token == ";"){
-            /*
-            while(!operatorStack.empty() && (operatorStack.top())->cmdString() != "("){
-                outputQueue.push(operatorStack.top());
-                operatorStack.pop();
-            }
-            */
-
             operatorStack.push(currCmd);
         }else if(token == "("){
             operatorStack.push(currCmd);
@@ -214,25 +207,6 @@ std::queue<Command*> Parser::shuntingYard(std::queue<Command*> preSyQueue){
     return outputQueue;
 }
 
-void Parser::inOrder(struct Node* node, std::queue<Command*> *inorderQueue){
-    if(node == NULL){
-        return;
-    }
-
-    inOrder(node->left, inorderQueue);
-/*
-    std::cout << node->cmd->cmdString() << std::endl;
-
-    if(node->cmd->cmdString() == "cmd"){
-        std::vector<char*> newv = node->cmd->getRawCmd();
-        std::cout << node->cmd->getPath() << " " << newv[1] << std::endl;
-    }
-*/
-    inorderQueue->push(node->cmd);
-
-    inOrder(node->right, inorderQueue);
-}
-
 void Parser::buildTree(std::queue<Command*> outQueue){
     std::stack<Node*> operandStack;
 
@@ -258,13 +232,7 @@ void Parser::buildTree(std::queue<Command*> outQueue){
         outQueue.pop();
     }
 
-    std::queue<Command*> empty;
-    std::queue<Command*> inorderQueue;
-    std::queue<Command*> *queue;
-    std::swap(parsedCmds, empty);
-    std::queue<Command*> *inorder = &inorderQueue;
-    inOrder(operandStack.top(), inorder);
-    std::swap(parsedCmds, inorderQueue);
+    cmndTree = operandStack.top();
 }
 
 void Parser::buildPrescedenceQueue(){
@@ -323,4 +291,8 @@ void Parser::buildPrescedenceQueue(){
         parsedCmds.pop();
     }
     std::swap(parsedCmds, prescQueue);
+}
+
+Node* Parser::getParsedCmndTree(){
+    return cmndTree;
 }

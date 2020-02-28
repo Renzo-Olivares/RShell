@@ -1,78 +1,38 @@
 #include "../header/Executor.hpp"
 
-Executor::Executor(CommandQueue* cmdQueue){
-    cmdList = cmdQueue;
+Executor::Executor(){
     bracketError = false;
+    andflag = false;
+    orflag = false;
+    exitflag = false;
 }
 
-int Executor::runCmds(){
-    while(!cmdList->isEmpty()){
+int Executor::runCmds(Command* cmd){
+
         pid_t child_pid; 
         pid_t wait_child; //pid returned by waitpid
 
-        if((cmdList->getFront())->isMultiple()){
-            Executor subrunner = Executor((CommandQueue* ) cmdList->getFront());
-            int exit = subrunner.runCmds();
-            if(exit != 0){
-                cmdList->clear();
-                return -1;
+        if(std::string(cmd->getPath()) == "test" || std::string(cmd->getPath()) == "["){
+            //run test command
+            bool fileFound  = runTestCmd(cmd);
+            if(bracketError){
+                child_status = 256;
+                std::cout << "Command error" << std::endl;
+                bracketError = false;
+            }else if(!fileFound){
+                child_status = 256;
+                std::cout << "(False)" << std::endl; 
+            }else {
+                child_status = 0;
+                std::cout << "(True)" << std::endl;
             }
-            cmdList->popCmd(); ///pop commandqueue 
-            child_status = subrunner.getLastChildStatus();
-            continue;
-        }
-
-        if (cmdList->cmdString() != "cmd"){
-            if(cmdList->cmdString() == "&&"){
-                if(child_status == 0){
-                    cmdList->popCmd(); //pop connector
-                    continue;
-                }else{
-                    cmdList->popCmd(); //pop connector
-                    cmdList->popCmd(); //pop next command
-                    continue;
-                }
-            }else if(cmdList->cmdString() == "||"){
-                if(child_status != 0){ //last command was not successful
-                    cmdList->popCmd(); //pop connector
-                    continue;
-                }else{ //last command was successful
-                    cmdList->popCmd(); //pop connector
-                    cmdList->popCmd(); //pop next command
-                    continue;
-                }
-            }else if(cmdList->cmdString() == "exit"){
-                //break everythig and return immediately
-                cmdList->clear();
-                return -1;
-            }else{
-                cmdList->popCmd(); //pop connector
-                continue;
-            }
-        }else{
-            if(std::string(cmdList->getPath()) == "test" || std::string(cmdList->getPath()) == "["){
-                //run test command
-                bool fileFound  = runTestCmd();
-                cmdList->popCmd();
-                if(bracketError){
-                    child_status = 256;
-                    std::cout << "Command error" << std::endl;
-                    bracketError = false;
-                }else if(!fileFound){
-                    child_status = 256;
-                    std::cout << "(False)" << std::endl; 
-                }else {
-                    child_status = 0;
-                    std::cout << "(True)" << std::endl;
-                }
-                continue;
-            }
+            return 0;
         }
 
         child_pid = fork();
 
         if(child_pid == 0){//fork() returns 0 to the child process
-            execvp(cmdList->getPath(), cmdList->getArgs());
+            execvp(cmd->getPath(), cmd->getArgs());
 
 
             //if child process reaches here execvp must have failed
@@ -86,8 +46,7 @@ int Executor::runCmds(){
                 wait_child = waitpid(child_pid,&child_status,0);
             }
         }
-        cmdList->popCmd();
-    }
+
     return 0;
 }
 
@@ -95,8 +54,8 @@ int Executor::getLastChildStatus(){
     return child_status;
 }
 
-bool Executor::runTestCmd(){
-    std::vector<char*> testvec = (cmdList->getFront())->getRawCmd();
+bool Executor::runTestCmd(Command* cmd){
+    std::vector<char*> testvec = cmd->getRawCmd();
     Parser subParser = Parser("null");
     struct stat sb;
     std::string fullArgString = testvec.at(1);
@@ -104,7 +63,7 @@ bool Executor::runTestCmd(){
     char* testArgs;
     int backPos = fullArgString.length() - 1;
     
-    if(std::string(cmdList->getPath()) == "["){
+    if(std::string(cmd->getPath()) == "["){
         
         if(fullArgString.at(backPos) != ']'){
             bracketError = true;
@@ -149,4 +108,48 @@ bool Executor::runTestCmd(){
                 return false;
         }
     }
+}
+
+void Executor::inOrder(Node* cmndNode){
+    if(cmndNode == NULL || exitflag){
+        return;
+    }
+
+    inOrder(cmndNode->left);
+/*
+    std::cout << node->cmd->cmdString() << std::endl;
+
+    if(node->cmd->cmdString() == "cmd"){
+        std::vector<char*> newv = node->cmd->getRawCmd();
+        std::cout << node->cmd->getPath() << " " << newv[1] << std::endl;
+    }
+*/
+    if(cmndNode->cmd->cmdString() != "cmd"){
+        if(cmndNode->cmd->cmdString() == "&&"){
+            andflag = true;
+        }else if(cmndNode->cmd->cmdString() == "||"){
+            orflag = true;
+        }else if(cmndNode->cmd->cmdString() == "exit"){
+            exitflag = true;
+            return;
+        }else{
+            //
+        }
+    }else{
+        runCmds(cmndNode->cmd);
+    }
+
+    if(andflag && child_status != 0){
+        andflag = false;
+        return;
+    }else if(orflag && child_status == 0){
+        orflag = false;
+        return;
+    }else{
+        inOrder(cmndNode->right);
+    }
+}
+
+bool Executor::isExit(){
+    return exitflag;
 }

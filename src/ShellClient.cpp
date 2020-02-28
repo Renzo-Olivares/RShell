@@ -12,8 +12,8 @@ void ShellClient::init(){
     UserInput rawInput = UserInput();
     Parser analyzer = Parser(rawInput.getInput());
     analyzer.run();
-    CommandQueue* cmdQ = new CommandQueue();
-    cmdQ->addQueue(analyzer.getParsedCmds());
-    Executor runner = Executor(cmdQ);
-    exit = runner.runCmds() == 0? false: true;
+    Node* cmndTree = analyzer.getParsedCmndTree();
+    Executor runner = Executor();
+    runner.inOrder(cmndTree);
+    exit = runner.isExit() ? true: false;
 }

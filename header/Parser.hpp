@@ -1,10 +1,10 @@
 #ifndef PARSER_HPP
 #define PARSER_HPP
 
-#include "../header/CommandQueue.hpp"
 #include "../header/BasicCommand.hpp"
 #include "../header/Connector.hpp"
 #include "../header/ExitCommand.hpp"
+#include "../header/Node.hpp"
 
 #include <queue>
 #include <regex>
@@ -14,22 +14,11 @@
 #include <boost/regex.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
-struct Node{
-    Command* cmd;
-
-    struct Node* left, *right;                   
-
-    Node(Command* cmd){
-        this->cmd = cmd;
-        left = right = NULL;
-    }
-};
-
 class Parser{
     private:
         std::queue<Command*> parsedCmds;
         std::string userInput;
-        struct Node* root;
+        Node* cmndTree;
     public:
         Parser(std::string rawUserInput);
         void run();
@@ -42,9 +31,9 @@ class Parser{
         std::string popQuotes(std::string qString);
         std::queue<Command*> mirror(std::queue<Command*> cmdQ);
         std::queue<Command*> shuntingYard(std::queue<Command*> preSyQueue);
-        void inOrder(struct Node* node, std::queue<Command*> *inorderQueue);
         void buildTree(std::queue<Command*> outQueue);
         void buildPrescedenceQueue();
+        Node* getParsedCmndTree();
 };
 
 #endif /* PARSER_HPP */

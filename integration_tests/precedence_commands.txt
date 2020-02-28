@@ -1,0 +1,10 @@
+(echo a && echo b) || (echo c && echo d)
+(echo a && echo b) || echo c && echo d
+echo a && echo b || (echo c && echo d)
+((echo hello && echo world) && (echo goodbye && echo earth))
+((echo hello && echo world) || (echo goodbye && echo earth))
+(echo a && echo b) || (echo c && echo d) || (echo e && echo f) || (echo g && echo h)
+echo a && echo c && (echo b && echo f)
+echa a || (echo b && echo l)
+echo a ; (echo c && echo g) || echo fail
+exit

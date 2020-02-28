@@ -14,9 +14,10 @@ This is a command shell, and executes commands such as:
 	* `&&`: next command executes only if the first one executes
 	* `||`: next command executes only if the first one fails
 	* `;`: next command is always executed
-* Leverages `fork(), execvp(), waitpid()` to execute a queue of commands
+	* `()` : parentheses command only used during parsing, does not show up in final expression tree
+* Leverages `fork(), execvp(), waitpid()` to execute an expression tree of `Commands`.
 * Everything after `#` is a comment.
-* Exits program when exit command is executed.
+* Exits program when `exit` is executed.
 
 User will launch Rshell with
 ```
@@ -150,7 +151,7 @@ class BasicCommand: Public Command{
 
 ## Connector
 * Inherits from `Command`
-* Identifies `&&`, `||`, and `;`
+* Identifies `&&`, `||`,`;`, `(`, `)`
 ```c++
 class Connector: Public Command{
 	private:
@@ -159,7 +160,7 @@ class Connector: Public Command{
         Connector(char* connectorType);
         char* getPath();
         char** getArgs();
-        virtual std::string cmdString(); //returns connector type "&&"  or "||" or ";"
+        virtual std::string cmdString(); //returns connector type "&&"  or "||" or ";" or "(" or ")"
 };
 ```
 ## ExitCommand

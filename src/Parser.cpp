@@ -174,11 +174,12 @@ std::queue<Command*> Parser::shuntingYard(std::queue<Command*> preSyQueue){
         if(token == "cmd" || token == "exit"){
             outputQueue.push(currCmd);
         }else if(token == "&&" || token == "||" || token == ";"){
-
+            /*
             while(!operatorStack.empty() && (operatorStack.top())->cmdString() != "("){
                 outputQueue.push(operatorStack.top());
                 operatorStack.pop();
             }
+            */
 
             operatorStack.push(currCmd);
         }else if(token == "("){
@@ -219,14 +220,14 @@ void Parser::inOrder(struct Node* node, std::queue<Command*> *inorderQueue){
     }
 
     inOrder(node->left, inorderQueue);
-/*
+
     std::cout << node->cmd->cmdString() << std::endl;
 
     if(node->cmd->cmdString() == "cmd"){
         std::vector<char*> newv = node->cmd->getRawCmd();
         std::cout << node->cmd->getPath() << " " << newv[1] << std::endl;
     }
-*/
+
     inorderQueue->push(node->cmd);
 
     inOrder(node->right, inorderQueue);

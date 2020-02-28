@@ -16,10 +16,6 @@ char** Connector::getArgs(){
     return args;
 }
 
-bool Connector::isMultiple(){
-    return false;
-}
-
 std::string Connector::cmdString(){
     return type;
 }

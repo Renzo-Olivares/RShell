@@ -14,10 +14,6 @@ char** BasicCommand::getArgs(){
     return command.data();
 }
 
-bool BasicCommand::isMultiple(){
-    return false;
-}
-
 std::string BasicCommand::cmdString(){
     return "cmd";
 }

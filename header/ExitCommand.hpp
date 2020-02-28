@@ -10,7 +10,6 @@ class ExitCommand : public Command {
         ExitCommand(char* exitex);
         virtual char* getPath();
         virtual char** getArgs();
-        virtual bool isMultiple();
         virtual std::string cmdString();
 };
 

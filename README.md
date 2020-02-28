@@ -15,9 +15,21 @@ This is a command shell, and executes commands such as:
 	* `||`: next command executes only if the first one fails
 	* `;`: next command is always executed
 	* `()` : parentheses command only used during parsing, does not show up in final expression tree
+	* `#` : Everything after `#` is ignored
+	* `test` : Checks if file/directory exits with the help of `stat()` syscall
+		* Syntax:
+			* Literal:
+				* Example 1: `test -e rshell`
+				* Example 2: `test rshell` 
+			* Symbolic:
+				* Example 1: `[ -e rshell ]`
+				* Example 2: `[ rshell ]`
+		* Flags:
+			* `-e` : Matches any type of file/directory. This flag is on by default if no flag is indicated
+			* `-f` : Matches a file
+			* `-d` : Matches a directory
+	* `exit` : Exits program when executed
 * Leverages `fork(), execvp(), waitpid()` to execute an expression tree of `Commands`.
-* Everything after `#` is a comment.
-* Exits program when `exit` is executed.
 
 User will launch Rshell with
 ```
@@ -28,11 +40,11 @@ They will then be prompted for input as follows
 $
 ```
 
-Behind the scenes our `main` will instantiate our `ShellClient`. `ShellClient` will then instantiate the objects we need such as our `UserInput`, `Parser`, and `Executor`. `ShellClient` will then call its member function `init()` in a while loop that exits when the `Executor` returns the exitflag as true which is when it encounters the ExitCommand. The member function `init()` calls on our `UserInput` object that will prompt the user for input using the `$` and capture that input. `ShellClient` will then pass that raw input from `UserInput` into our `Parser`. Our `Parser` using regex(regular expressions) will then tokenize our raw input into tokens seperated by whitespace. Using these tokens `Parser` will sequentially transform them into a `BasicCommand`, `ExitCommand`, or `Connector` object depending on the situation and then push that object onto the a queue pf `Command`. Our `Parser` will then run `buildPrescedenceQueue()` which checks for parentheses and builds a new queue inserting parentheses. `Parser` then mirrors that output and passed it into `shuntingYard()` which turns the infix expression into postfix. After we have the postfix expression we use `buildTree()` which uses the postfix queue to build an expression tree. `ShellClient` will then pass the expression tree to the `Executor` where it will leverage `fork(), execvp(), and waitpid()` in order to execute the expression tree. The `Executor` will also take into account connector logic and will execute or skip commands as needed. `Executor` will execute the tree using in order traversal. `ShellClient` then checks if Executors exitflag is true, if it is then we exit the loop, if not then we continue and prompt the user once again for input.  
+Behind the scenes our `main` will instantiate our `ShellClient`. `ShellClient` will then instantiate the objects we need such as our `UserInput`, `Parser`, and `Executor`. `ShellClient` will then call its member function `init()` in a while loop that exits when the `Executor` returns the exitflag as true which is when it encounters the ExitCommand. The member function `init()` calls on our `UserInput` object that will prompt the user for input using the `$` and capture that input. `ShellClient` will then pass that raw input from `UserInput` into our `Parser`. Our `Parser` then uses regex(regular expression) to replace all semicolons in the user input with a semicolon with two whitespace surrounding it. Then `Parser` using regex once again will then tokenize our raw input into tokens seperated by whitespace. Using these tokens `Parser` will sequentially transform them into a `BasicCommand`, `ExitCommand`, or `Connector` object depending on the situation and then push that object onto the a queue pf `Command`. Our `Parser` will then run `buildPrescedenceQueue()` which checks for parentheses that were not seperated by whitespace and were not caught by the tokenizer and builds a new queue inserting parentheses. `Parser` then mirrors that output and passed it into `shuntingYard()` which turns the infix expression into postfix. `shuntingYard()` will return an empty queue if there is mismatched parentheses and then `run()` will return to `ShellClient` prompting the user to re-enter their command. After we have the postfix expression we use `buildTree()` which uses the postfix queue to build an expression tree. `ShellClient` will then pass the expression tree to the `Executor` where it will leverage `fork(), execvp(), and waitpid()` in order to execute the expression tree. The `Executor` will also take into account connector logic and will execute or skip commands as needed. `Executor` will execute the tree using in order traversal. `ShellClient` then checks if Executors exitflag is true, if it is then we exit the loop, if not then we continue and prompt the user once again for input.  
 
 We will be using the composite pattern to represent our commands. Our client is our `ShellClient` and our component is `Command`. `Command` had three leaf nodes: `BasicCommand`, `Connector`, and `ExitCommand`.
 
-Our `Parser` does most of its magic with regex. It seperates the string into tokens by whitespace using a regex pattern, however not whitespace in between quotations. We then loop through our matches keeping a count. If that count is 1 then the match but be an executable. If the count is 2 or greater it must be an argument. As long as it is an argument keep adding the matches together. Once we hit any type of `Connector` reset the count to 1 because after a `Connector` follows an executable. `Parser` also leverages helper functions like `characterize()` which turns a string into a `char*`, and `addTwoChars()` to add arguments, and `whitespaceTrimLt()` to trim trailing and leading whitespaces, and `commentTrim()` to trim the string of anything including and past a `#` not in between quotes.
+Our `Parser` does most of its magic with regex. It first looks for semicolons in the user input and replaces them with `" ; "` a semicolon with whitespace at both ends. THis way our parses can continue and properly split tokens by whitespace. After doing this it seperates the string into tokens by whitespace using a regex pattern, however not whitespace in between quotations. We then loop through our matches keeping a count. If that count is 1 then the match but be an executable. If the count is 2 or greater it must be an argument. As long as it is an argument keep adding the matches together. Once we hit any type of `Connector` reset the count to 1 because after a `Connector` follows an executable. `Parser` also leverages helper functions like `characterize()` which turns a string into a `char*`, and `addTwoChars()` to add arguments, and `whitespaceTrimLt()` to trim trailing and leading whitespaces, and `commentTrim()` to trim the string of anything including and past a `#` not in between quotes.
 
 #  Diagram 
 ![rshell_omt](images/rshellomt0213.jpg?raw=true)
@@ -69,6 +81,7 @@ class UserInput{
 ## Parser
 * Takes in user input and tokenizes it into seperate tokens:
 	* Builds either BasicCommand, ExitCommand, or Connector(&& || ; ( )) depending on the conditions and pushes them onto a `queue` of Command pointers
+* run() returns an int, either -1 for failure or 0 for success.
 * buildPrescedenceQueue() parses parentheses
 * mirror() Mirrors queue of Command pointers and passes them to shuntingYard()
 * shuntingYard() turns infix to postfix
@@ -82,7 +95,7 @@ class Parser{
 		Node* cmndTree;
     public:
         Parser(std::string rawUserInput);
-        void run(); //parser
+        int run(); //parser
         char* whitespaceTrimLt(std::string rawString); //trim leading and trailing whitespace
 		char* characterize(std::string rawString); //turn string into char*
         void buildCmd(char* execu, char* args); //build command

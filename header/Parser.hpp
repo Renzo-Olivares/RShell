@@ -42,10 +42,9 @@ class Parser{
         std::string popQuotes(std::string qString);
         std::queue<Command*> mirror(std::queue<Command*> cmdQ);
         std::queue<Command*> shuntingYard(std::queue<Command*> preSyQueue);
-        void inOrder(struct Node* node, Command* inorderQueue);
-        Command* buildTree(std::queue<Command*> outQueue);
+        void inOrder(struct Node* node, std::queue<Command*> *inorderQueue);
+        void buildTree(std::queue<Command*> outQueue);
         void buildPrescedenceQueue();
-        void renzoYard();
 };
 
 #endif /* PARSER_HPP */

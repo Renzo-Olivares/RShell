@@ -69,10 +69,9 @@ void Parser::run(){
     }
 
     buildPrescedenceQueue();
-    renzoYard();
-    //std::queue<Command*> mirrorQueue = mirror(parsedCmds);
-    //std::queue<Command*> shyardQueue = shuntingYard(mirrorQueue);
-    //buildTree(shyardQueue);
+    std::queue<Command*> mirrorQueue = mirror(parsedCmds);
+    std::queue<Command*> shyardQueue = shuntingYard(mirrorQueue);
+    buildTree(shyardQueue);
 }
 
 std::queue<Command*> Parser::getParsedCmds(){
@@ -214,7 +213,7 @@ std::queue<Command*> Parser::shuntingYard(std::queue<Command*> preSyQueue){
     return outputQueue;
 }
 
-void Parser::inOrder(struct Node* node, Command* inorderQueue){
+void Parser::inOrder(struct Node* node, std::queue<Command*> *inorderQueue){
     if(node == NULL){
         return;
     }
@@ -228,12 +227,12 @@ void Parser::inOrder(struct Node* node, Command* inorderQueue){
         std::cout << node->cmd->getPath() << " " << newv[1] << std::endl;
     }
 */
-    inorderQueue->addCmd(node->cmd);
+    inorderQueue->push(node->cmd);
 
     inOrder(node->right, inorderQueue);
 }
 
-Command* Parser::buildTree(std::queue<Command*> outQueue){
+void Parser::buildTree(std::queue<Command*> outQueue){
     std::stack<Node*> operandStack;
 
     while(!outQueue.empty()){
@@ -258,14 +257,13 @@ Command* Parser::buildTree(std::queue<Command*> outQueue){
         outQueue.pop();
     }
 
-    //std::queue<Command*> empty;
-    //std::queue<Command*> inorderQueue;
-    Command* parenQueue = new CommandQueue();
-    //std::swap(parsedCmds, empty);
-    //std::queue<Command*> *inorder = &inorderQueue;
-    inOrder(operandStack.top(), parenQueue);
-    //std::swap(parsedCmds, inorderQueue);
-    return parenQueue;
+    std::queue<Command*> empty;
+    std::queue<Command*> inorderQueue;
+    std::queue<Command*> *queue;
+    std::swap(parsedCmds, empty);
+    std::queue<Command*> *inorder = &inorderQueue;
+    inOrder(operandStack.top(), inorder);
+    std::swap(parsedCmds, inorderQueue);
 }
 
 void Parser::buildPrescedenceQueue(){
@@ -324,8 +322,4 @@ void Parser::buildPrescedenceQueue(){
         parsedCmds.pop();
     }
     std::swap(parsedCmds, prescQueue);
-}
-
-void Parser::renzoYard(){
-
 }

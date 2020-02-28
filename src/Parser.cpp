@@ -220,14 +220,14 @@ void Parser::inOrder(struct Node* node, std::queue<Command*> *inorderQueue){
     }
 
     inOrder(node->left, inorderQueue);
-
+/*
     std::cout << node->cmd->cmdString() << std::endl;
 
     if(node->cmd->cmdString() == "cmd"){
         std::vector<char*> newv = node->cmd->getRawCmd();
         std::cout << node->cmd->getPath() << " " << newv[1] << std::endl;
     }
-
+*/
     inorderQueue->push(node->cmd);
 
     inOrder(node->right, inorderQueue);

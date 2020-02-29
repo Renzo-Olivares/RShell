@@ -89,11 +89,11 @@ class UserInput{
 * Saves expression tree root to Node*
 ```c++
 class Parser{
-	 private:
-        std::queue<Command*> parsedCmds;
-        std::string userInput;
+	private:
+		std::queue<Command*> parsedCmds;
+		std::string userInput;
 		Node* cmndTree;
-    public:
+	public:
 		Parser(std::string rawUserInput);
 		int run(); //parser
 		char* whitespaceTrimLt(std::string rawString); //trim leading and trailing whitespace
@@ -142,7 +142,7 @@ class Command{
 		virtual std::string cmdString(); //returns string with command/command details
 		virtual char* getPath(); //returns path of command
 		virtual char** getArgs(); //returns argument
-        virtual std::vector<char*> getRawCmd(){}; //returns raw command vector of char* includes exec path and arguments
+		virtual std::vector<char*> getRawCmd(){}; //returns raw command vector of char* includes exec path and arguments
 };
 ```
 

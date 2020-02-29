@@ -94,11 +94,11 @@ class Parser{
         std::string userInput;
 		Node* cmndTree;
     public:
-        Parser(std::string rawUserInput);
-        int run(); //parser
-        char* whitespaceTrimLt(std::string rawString); //trim leading and trailing whitespace
+		Parser(std::string rawUserInput);
+		int run(); //parser
+		char* whitespaceTrimLt(std::string rawString); //trim leading and trailing whitespace
 		char* characterize(std::string rawString); //turn string into char*
-        void buildCmd(char* execu, char* args); //build command
+		void buildCmd(char* execu, char* args); //build command
 		std::string commentTrim(std::string rawInput); //trim comment and everything after
 		char* addTwoChars(Char* A, char* B); //add arguments
 		std::queue<Command*> buildPrescedenceQueue(); //places parentheses in queue
@@ -159,7 +159,7 @@ class BasicCommand: Public Command{
 		const char* getPath();//returns executable path
 		char* const* getArgs();//returns executable arguments
 		virtual std::string cmdString();//returns string with command/command details
-        virtual std::vector<char*> getRawCmd(); //returns raw command vector of char* includes exec path and arguments
+		virtual std::vector<char*> getRawCmd(); //returns raw command vector of char* includes exec path and arguments
 };
 ```
 

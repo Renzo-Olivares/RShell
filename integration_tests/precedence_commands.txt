@@ -7,4 +7,7 @@ echo a && echo b || (echo c && echo d)
 echo a && echo c && (echo b && echo f)
 echa a || (echo b && echo l)
 echo a ; (echo c && echo g) || echo fail
+[ test ] && (echo a && echo b) || (echo c && echo d)
+test -f rshell && (echo a && echo b) || (echo c && echo d)
+(echo hello && echo goodbye);(echo lol && echo lmao)
 exit

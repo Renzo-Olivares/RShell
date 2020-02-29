@@ -7,4 +7,6 @@ ls -a && echo "hey"
 ls -a || echo a
 echo a && echo b && echa c || echo lol; echo hello
 echa || echo b && echo wow && echo c; echa f || echo error
+echo a;echo b;echo c;echo d;echo g;echo f;echo wow
+echo || echo b && echo wow && echo c;echo f || echo error
 exit

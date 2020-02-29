@@ -47,7 +47,7 @@ We will be using the composite pattern to represent our commands. Our client is 
 Our `Parser` does most of its magic with regex. It first looks for semicolons in the user input and replaces them with `" ; "` a semicolon with whitespace at both ends. THis way our parses can continue and properly split tokens by whitespace. After doing this it seperates the string into tokens by whitespace using a regex pattern, however not whitespace in between quotations. We then loop through our matches keeping a count. If that count is 1 then the match but be an executable. If the count is 2 or greater it must be an argument. As long as it is an argument keep adding the matches together. Once we hit any type of `Connector` reset the count to 1 because after a `Connector` follows an executable. `Parser` also leverages helper functions like `characterize()` which turns a string into a `char*`, and `addTwoChars()` to add arguments, and `whitespaceTrimLt()` to trim trailing and leading whitespaces, and `commentTrim()` to trim the string of anything including and past a `#` not in between quotes.
 
 #  Diagram 
-![rshell_omt](images/rshell_omt022820.jpg?raw=true)
+![rshell_omt](images/rshell_omt22820.jpg?raw=true)
 
 # Classes
 ## Shell Client

@@ -7,7 +7,9 @@ Parser::Parser(std::string rawUserInput){
 int Parser::run(){
     boost::regex re("[^\\s'\"]+|\"([^'\"]*)\"|'([^'\"]*)'");
     std::regex e("(;)(?=[^(\"|')]*(?:[(\"|')][^(\"|')]*[(\"|')][^(\"|')]*)*$)");
+    std::regex rp("(\\s+[)])(?=[^(\"|')]*(?:[(\"|')][^(\"|')]*[(\"|')][^(\"|')]*)*$)");
     userInput = std::regex_replace(userInput, e, " ; ");
+    userInput = std::regex_replace(userInput, rp,")");
     std::string cleanInput = commentTrim(userInput);
     std::string argstring = "";
     auto input_begin = boost::sregex_iterator(cleanInput.begin(), cleanInput.end(), re);
@@ -21,6 +23,13 @@ int Parser::run(){
 
     for( ; input_begin != input_end; ++input_begin ) {
        char* token = characterize(whitespaceTrimLt((*input_begin)[0]));
+       std::string tokenstring = whitespaceTrimLt((*input_begin)[0]);
+       if(tokenstring == "("){
+           buildCmd(token, NULL);
+           position++;
+           continue;
+       }
+       
        if(tokencount == 1){
            args = NULL;
            exec = token;
@@ -95,7 +104,7 @@ void Parser::buildCmd(char* execu, char* args){
     Command* newCmd;
     if(std::string(execu) == "exit"){
         newCmd = new ExitCommand(execu);
-    }else if(std::string(execu) == "&&" || std::string(execu) == "||" || std::string(execu) == ";"){
+    }else if(std::string(execu) == "&&" || std::string(execu) == "||" || std::string(execu) == ";"|| std::string(execu) == "("|| std::string(execu) == ")"){
         newCmd = new Connector(execu);
     }
     else{

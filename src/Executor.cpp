@@ -116,14 +116,7 @@ void Executor::inOrder(Node* cmndNode){
     }
 
     inOrder(cmndNode->left);
-/*
-    std::cout << node->cmd->cmdString() << std::endl;
 
-    if(node->cmd->cmdString() == "cmd"){
-        std::vector<char*> newv = node->cmd->getRawCmd();
-        std::cout << node->cmd->getPath() << " " << newv[1] << std::endl;
-    }
-*/
     if(cmndNode->cmd->cmdString() != "cmd"){
         if(cmndNode->cmd->cmdString() == "&&"){
             andflag = true;
